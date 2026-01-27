@@ -11,7 +11,7 @@ class PlatformDataSource {
 
   Future<ThermalStateModel> getThermalStatus() async {
     final result = await _channel.invokeMethod<int>(
-      AppConstants.getThermalStateMethod,
+      AppConstants.getThermalStatusMethod,
     );
 
     return ThermalStateModel(value: result);
