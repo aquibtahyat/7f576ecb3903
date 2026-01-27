@@ -113,7 +113,7 @@ class MainActivity : FlutterActivity() {
                 PowerManager.THERMAL_STATUS_CRITICAL,
                 PowerManager.THERMAL_STATUS_EMERGENCY -> 3
 
-                else -> 3
+                else -> -1
             }
         }
         return -1
