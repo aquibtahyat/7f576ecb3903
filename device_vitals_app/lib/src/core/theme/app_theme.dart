@@ -1,6 +1,7 @@
 import 'package:device_vitals_app/src/core/theme/app_bar_theme.dart';
 import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/core/theme/app_snackbar_theme.dart';
+import 'package:device_vitals_app/src/core/theme/bottom_navigation_bar_theme.dart';
 import 'package:device_vitals_app/src/core/theme/elevated_button_theme.dart';
 import 'package:device_vitals_app/src/core/theme/floating_action_button_theme.dart';
 import 'package:device_vitals_app/src/core/theme/input_decoration_theme.dart';
@@ -24,5 +25,7 @@ class AppTheme {
     inputDecorationTheme: AppInputDecorationTheme.lightInputDecorationTheme,
     floatingActionButtonTheme: AppFABTheme.lightFABTheme,
     snackBarTheme: AppSnackBarTheme.lightSnackBarTheme,
+    bottomNavigationBarTheme:
+        AppBottomNavigationBarTheme.lightBottomNavigationBarTheme,
   );
 }
