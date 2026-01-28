@@ -26,4 +26,10 @@ abstract class RemoteDataSource {
     @Path('device_id') required String deviceId,
     @Query('limit') required int limit,
   });
+
+  @GET(ApiEndpoints.getDeviceVitalsAnalytics)
+  Future<DeviceVitalsAnalyticsResponse> getDeviceVitalsAnalytics({
+    @Path('device_id') required String deviceId,
+    @Query('date_range') required String dateRange,
+  });
 }

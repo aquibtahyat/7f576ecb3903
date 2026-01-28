@@ -1,6 +1,7 @@
+import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/loading_widget.dart';
-import 'package:device_vitals_app/src/features/device_vitals/domain/params/device_vitals_request_params.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_request_entity.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_memory_usage/get_memory_usage_cubit.dart';
@@ -35,9 +36,18 @@ class LogVitalsButton extends StatelessWidget {
                 : _onTapLogStatus(context),
             child: state is LogDeviceVitalsLoading
                 ? LoadingWidget()
-                : Text(
-                    'Log Status',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.upload),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Log Status',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ],
                   ),
           );
         },
@@ -65,7 +75,7 @@ class LogVitalsButton extends StatelessWidget {
     }
 
     context.read<LogDeviceVitalsCubit>().logDeviceVitals(
-      DeviceVitalsRequestParams(
+      DeviceVitalsRequestEntity(
         thermalValue: thermal,
         batteryLevel: battery,
         memoryUsage: memory,

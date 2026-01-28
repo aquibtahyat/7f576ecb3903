@@ -79,21 +79,26 @@ class _DashboardBodyState extends State<DashboardBody>
           },
         ),
       ],
-      child: Scaffold(
-        backgroundColor: AppColors.screenBackground,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              children: [
-                ThermalStateCard(),
-                const SizedBox(height: 16),
-                BatteryLevelCard(),
-                const SizedBox(height: 16),
-                MemoryUsageCard(),
-                const SizedBox(height: 24),
-                LogVitalsButton(),
-              ],
+      child: RefreshIndicator(
+        onRefresh: _getDashboardData,
+        child: Scaffold(
+          backgroundColor: AppColors.screenBackground,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ThermalStateCard(),
+                    const SizedBox(height: 16),
+                    BatteryLevelCard(),
+                    const SizedBox(height: 16),
+                    MemoryUsageCard(),
+                    const SizedBox(height: 24),
+                    LogVitalsButton(),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -102,14 +107,10 @@ class _DashboardBodyState extends State<DashboardBody>
   }
 
   Future<void> _getDashboardData() async {
-    final thermalCubit = context.read<GetThermalStateCubit>();
-    final batteryCubit = context.read<GetBatteryLevelCubit>();
-    final memoryCubit = context.read<GetMemoryUsageCubit>();
-
     await Future.wait([
-      thermalCubit.getThermalState(isLoadAll: true),
-      batteryCubit.getBatteryLevel(isLoadAll: true),
-      memoryCubit.getMemoryUsage(isLoadAll: true),
+      context.read<GetThermalStateCubit>().getThermalState(isLoadAll: true),
+      context.read<GetBatteryLevelCubit>().getBatteryLevel(isLoadAll: true),
+      context.read<GetMemoryUsageCubit>().getMemoryUsage(isLoadAll: true),
     ]);
   }
 
@@ -118,24 +119,21 @@ class _DashboardBodyState extends State<DashboardBody>
 
     final t = context.read<GetThermalStateCubit>().state;
     if (t is GetThermalStateFailure) {
-      messages.add('Thermal: ${t.message}');
+      messages.add(t.message);
     }
 
     final b = context.read<GetBatteryLevelCubit>().state;
     if (b is GetBatteryLevelFailure) {
-      messages.add('Battery: ${b.message}');
+      messages.add(b.message);
     }
 
     final m = context.read<GetMemoryUsageCubit>().state;
     if (m is GetMemoryUsageFailure) {
-      messages.add('Memory: ${m.message}');
+      messages.add(m.message);
     }
 
     if (messages.isNotEmpty) {
-      context.showSnackBar(
-        messages.join('\n\n'),
-        duration: Duration(seconds: messages.length > 1 ? 6 : 4),
-      );
+      context.showSnackBar(messages.join('\n\n'));
     }
   }
 

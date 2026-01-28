@@ -1,17 +1,22 @@
 import 'package:device_vitals_app/src/core/base/repository.dart';
 import 'package:device_vitals_app/src/core/base/result.dart';
-import 'package:device_vitals_app/src/core/utils/services/device_info.dart';
-import 'package:device_vitals_app/src/core/utils/services/time_provider.dart';
+import 'package:device_vitals_app/src/core/services/device/device_info.dart';
+import 'package:device_vitals_app/src/core/services/time/time_service.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/data_sources/platform/platform_data_source.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/data_sources/remote/remote_data_source.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/battery_level_mapper.dart';
+import 'package:device_vitals_app/src/features/device_vitals/data/mappers/device_vitals_analytics_mapper.dart';
+import 'package:device_vitals_app/src/features/device_vitals/data/mappers/device_vitals_mapper.dart';
+import 'package:device_vitals_app/src/features/device_vitals/data/mappers/device_vitals_request_mapper.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/memory_usage_mapper.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/thermal_state_mapper.dart';
-import 'package:device_vitals_app/src/features/device_vitals/data/models/device_vitals_request_model.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/battery_level_entity.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_analytics_entity.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_entity.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_request_entity.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/memory_usage_entity.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/thermal_state_entity.dart';
-import 'package:device_vitals_app/src/features/device_vitals/domain/params/device_vitals_request_params.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/enums/date_range_enum.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/repositories/device_vitals_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -59,26 +64,70 @@ final class DeviceVitalsRepositoryImpl extends Repository
 
   @override
   Future<Result<void>> logDeviceVitals({
-    required DeviceVitalsRequestParams request,
+    required DeviceVitalsRequestEntity request,
   }) async {
     final deviceId = await _deviceInfo.getDeviceId();
 
     if (deviceId == null || deviceId.isEmpty) {
       return const Failure(
-        'Device ID not found on this device. Unable to load history.',
+        'Device ID not found on this device. Unable to load history',
+      );
+    }
+
+    String timestamp = _timeProvider.nowUtc().toIso8601String();
+
+    return asyncGuard(() async {
+      final body = DeviceVitalsRequestMapper.toModel(
+        entity: request,
+        timestamp: timestamp,
+        deviceId: deviceId,
+      );
+
+      await _remoteDataSource.logDeviceVitals(body: body);
+    });
+  }
+
+  @override
+  Future<Result<List<DeviceVitalsEntity>>> getDeviceVitalsHistory({
+    int limit = 100,
+  }) async {
+    final deviceId = await _deviceInfo.getDeviceId();
+
+    if (deviceId == null || deviceId.isEmpty) {
+      return const Failure(
+        'Device ID not found on this device. Unable to load history',
       );
     }
 
     return asyncGuard(() async {
-      final body = DeviceVitalsRequestModel(
-        timestamp: _timeProvider.nowUtc().toIso8601String(),
+      final response = await _remoteDataSource.getDeviceVitalsHistory(
         deviceId: deviceId,
-        thermalValue: request.thermalValue,
-        batteryLevel: request.batteryLevel,
-        memoryUsage: request.memoryUsage,
+        limit: limit,
       );
 
-      await _remoteDataSource.logDeviceVitals(body: body);
+      return DeviceVitalsMapper.toEntityList(response.data);
+    });
+  }
+
+  @override
+  Future<Result<DeviceVitalsAnalyticsEntity>> getDeviceVitalsAnalytics({
+    required DateRange dateRange,
+  }) async {
+    final deviceId = await _deviceInfo.getDeviceId();
+
+    if (deviceId == null || deviceId.isEmpty) {
+      return const Failure(
+        'Device ID not found on this device. Unable to load analytics.',
+      );
+    }
+
+    return asyncGuard(() async {
+      final response = await _remoteDataSource.getDeviceVitalsAnalytics(
+        deviceId: deviceId,
+        dateRange: dateRange.value,
+      );
+
+      return DeviceVitalsAnalyticsMapper.toEntity(response);
     });
   }
 }
