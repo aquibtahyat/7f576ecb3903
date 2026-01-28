@@ -9,4 +9,13 @@ enum ThermalStatus {
 
   final int value;
   final String label;
+
+  static String getLabelFromValue(int? value) {
+    return ThermalStatus.values
+        .firstWhere(
+          (status) => status.value == value,
+          orElse: () => ThermalStatus.unknown,
+        )
+        .label;
+  }
 }
