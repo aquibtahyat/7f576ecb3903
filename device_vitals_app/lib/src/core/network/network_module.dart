@@ -9,7 +9,11 @@ Dio _createBaseDio() {
   final dio = Dio()
     ..options.baseUrl = ApiEndpoints.baseUrl
     ..options.connectTimeout = const Duration(seconds: 10)
-    ..options.receiveTimeout = const Duration(seconds: 20);
+    ..options.receiveTimeout = const Duration(seconds: 20)
+    ..options.headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
 
   return dio;
 }
