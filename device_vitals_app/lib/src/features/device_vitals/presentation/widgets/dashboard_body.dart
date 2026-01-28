@@ -6,7 +6,10 @@ import 'package:device_vitals_app/src/features/device_vitals/presentation/manage
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_memory_usage/get_memory_usage_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_state.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/vitals_card.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/battery_level_card.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/log_vitals_button.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/memory_usage_card.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/thermal_state_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,11 +20,22 @@ class DashboardBody extends StatefulWidget {
   State<DashboardBody> createState() => _DashboardBodyState();
 }
 
-class _DashboardBodyState extends State<DashboardBody> {
+class _DashboardBodyState extends State<DashboardBody>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     _getDashboardData();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      _getDashboardData();
+    }
   }
 
   @override
@@ -66,105 +80,19 @@ class _DashboardBodyState extends State<DashboardBody> {
         ),
       ],
       child: Scaffold(
-        appBar: AppBar(centerTitle: true, title: Text('Device Vitals')),
         backgroundColor: AppColors.screenBackground,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               children: [
+                ThermalStateCard(),
                 const SizedBox(height: 16),
-                BlocBuilder<GetThermalStateCubit, GetThermalStateState>(
-                  builder: (context, state) {
-                    if (state is GetThermalStateLoading) {
-                      return VitalsCard.loading();
-                    } else if (state is GetThermalStateSuccess) {
-                      return VitalsCard(
-                        title: 'Thermal State',
-                        icon: Icons.thermostat_outlined,
-                        label: state.thermalState.label,
-                        value: state.thermalState.value,
-                        isColorReverse: true,
-                        maxValue: 3,
-                        onRefresh: () {
-                          context
-                              .read<GetThermalStateCubit>()
-                              .getThermalState();
-                        },
-                      );
-                    } else {
-                      return VitalsCard.failed(
-                        title: 'Thermal State',
-                        icon: Icons.thermostat_outlined,
-                        onRefresh: () {
-                          context
-                              .read<GetThermalStateCubit>()
-                              .getThermalState();
-                        },
-                      );
-                    }
-                  },
-                ),
+                BatteryLevelCard(),
                 const SizedBox(height: 16),
-                BlocBuilder<GetBatteryLevelCubit, GetBatteryLevelState>(
-                  builder: (context, state) {
-                    if (state is GetBatteryLevelLoading) {
-                      return VitalsCard.loading();
-                    } else if (state is GetBatteryLevelSuccess) {
-                      return VitalsCard(
-                        title: 'Battery Level',
-                        icon: Icons.battery_charging_full,
-                        label: '${state.batteryLevel.batteryLevel ?? 0}%',
-                        value: state.batteryLevel.batteryLevel,
-                        maxValue: 100,
-                        onRefresh: () {
-                          context
-                              .read<GetBatteryLevelCubit>()
-                              .getBatteryLevel();
-                        },
-                      );
-                    } else {
-                      return VitalsCard.failed(
-                        title: 'Battery Level',
-                        icon: Icons.battery_charging_full,
-                        onRefresh: () {
-                          context
-                              .read<GetBatteryLevelCubit>()
-                              .getBatteryLevel();
-                        },
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                BlocBuilder<GetMemoryUsageCubit, GetMemoryUsageState>(
-                  builder: (context, state) {
-                    if (state is GetMemoryUsageLoading) {
-                      return VitalsCard.loading();
-                    } else if (state is GetMemoryUsageSuccess) {
-                      return VitalsCard(
-                        title: 'Memory Usage',
-                        icon: Icons.memory_sharp,
-                        label:
-                            '${(state.memoryUsage.memoryUsage ?? 0).round()}%',
-                        value: state.memoryUsage.memoryUsage,
-                        maxValue: 100,
-                        isColorReverse: true,
-                        onRefresh: () {
-                          context.read<GetMemoryUsageCubit>().getMemoryUsage();
-                        },
-                      );
-                    } else {
-                      return VitalsCard.failed(
-                        title: 'Memory Usage',
-                        icon: Icons.storage,
-                        onRefresh: () {
-                          context.read<GetMemoryUsageCubit>().getMemoryUsage();
-                        },
-                      );
-                    }
-                  },
-                ),
+                MemoryUsageCard(),
+                const SizedBox(height: 24),
+                LogVitalsButton(),
               ],
             ),
           ),
@@ -209,5 +137,11 @@ class _DashboardBodyState extends State<DashboardBody> {
         duration: Duration(seconds: messages.length > 1 ? 6 : 4),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 }

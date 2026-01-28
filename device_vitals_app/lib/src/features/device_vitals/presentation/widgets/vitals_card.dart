@@ -1,4 +1,5 @@
 import 'package:device_vitals_app/src/core/theme/app_colors.dart';
+import 'package:device_vitals_app/src/core/utils/vitals_metric_color.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -6,45 +7,45 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 class VitalsCard extends StatelessWidget {
   const VitalsCard({
     super.key,
+    required this.metricType,
     required this.title,
     required this.icon,
     this.value,
     this.label,
     required this.maxValue,
-    this.onRefresh,
-    this.isColorReverse = false,
+    this.onFailRefresh,
   }) : _isLoading = false,
        _isFailed = false;
 
-  const VitalsCard.loading({super.key, this.isColorReverse = false})
+  const VitalsCard.loading({super.key, required this.metricType})
     : title = null,
       icon = null,
       value = null,
       label = null,
-      onRefresh = null,
+      onFailRefresh = null,
       maxValue = 0,
       _isLoading = true,
       _isFailed = false;
 
   const VitalsCard.failed({
     super.key,
+    required this.metricType,
     required this.title,
     required this.icon,
-    required this.onRefresh,
-    this.isColorReverse = false,
+    required this.onFailRefresh,
   }) : value = null,
        label = 'Not Available',
        maxValue = 0,
        _isLoading = false,
        _isFailed = true;
 
+  final VitalMetricType metricType;
   final String? title;
   final IconData? icon;
   final num? value;
   final String? label;
   final int maxValue;
-  final VoidCallback? onRefresh;
-  final bool isColorReverse;
+  final VoidCallback? onFailRefresh;
   final bool _isLoading;
   final bool _isFailed;
 
@@ -109,12 +110,10 @@ class VitalsCard extends StatelessWidget {
                 ],
               )
             else
-              const SizedBox.shrink(),
-            const SizedBox(width: 8),
-            InkWell(
-              onTap: _isLoading ? null : onRefresh,
-              child: const Icon(Icons.refresh, color: AppColors.grey),
-            ),
+              InkWell(
+                onTap: _isLoading ? null : onFailRefresh,
+                child: const Icon(Icons.refresh, color: AppColors.grey),
+              ),
           ],
         ),
         const SizedBox(height: 16),
@@ -143,20 +142,19 @@ class VitalsCard extends StatelessWidget {
   }
 
   Color _getColor() {
-    if (_isFailed) {
-      return AppColors.errorDark;
-    }
-
-    if (value == null) return AppColors.grey;
-
-    if (!isColorReverse) {
-      if (value! / maxValue <= 0.33) return AppColors.error;
-      if (value! / maxValue <= 0.67) return AppColors.warning;
-      return AppColors.success;
-    } else {
-      if (value! / maxValue <= 0.33) return AppColors.success;
-      if (value! / maxValue <= 0.67) return AppColors.warning;
-      return AppColors.error;
-    }
+    return switch (metricType) {
+      VitalMetricType.thermal => VitalMetricColor.getThermalColor(
+        value,
+        isFailed: _isFailed,
+      ),
+      VitalMetricType.battery => VitalMetricColor.getBatteryColor(
+        value,
+        isFailed: _isFailed,
+      ),
+      VitalMetricType.memory => VitalMetricColor.getMemoryColor(
+        value,
+        isFailed: _isFailed,
+      ),
+    };
   }
 }
