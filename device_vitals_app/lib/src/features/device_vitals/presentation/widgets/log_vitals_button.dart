@@ -1,0 +1,75 @@
+import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
+import 'package:device_vitals_app/src/core/utils/widgets/loading_widget.dart';
+import 'package:device_vitals_app/src/features/device_vitals/domain/params/device_vitals_request_params.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_state.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_memory_usage/get_memory_usage_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_memory_usage/get_memory_usage_state.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_state.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/log_device_vitals/log_device_vitals_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/log_device_vitals/log_device_vitals_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class LogVitalsButton extends StatelessWidget {
+  const LogVitalsButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: BlocConsumer<LogDeviceVitalsCubit, LogDeviceVitalsState>(
+        listener: (context, state) {
+          if (state is LogDeviceVitalsFailure) {
+            context.showSnackBar(state.message);
+          }
+          if (state is LogDeviceVitalsSuccess) {
+            context.showSnackBar('Status logged successfully');
+          }
+        },
+        builder: (context, state) {
+          return ElevatedButton(
+            onPressed: () => state is LogDeviceVitalsLoading
+                ? null
+                : _onTapLogStatus(context),
+            child: state is LogDeviceVitalsLoading
+                ? LoadingWidget()
+                : Text(
+                    'Log Status',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _onTapLogStatus(BuildContext context) {
+    final tState = context.read<GetThermalStateCubit>().state;
+    final bState = context.read<GetBatteryLevelCubit>().state;
+    final mState = context.read<GetMemoryUsageCubit>().state;
+
+    if (tState is! GetThermalStateSuccess ||
+        bState is! GetBatteryLevelSuccess ||
+        mState is! GetMemoryUsageSuccess)
+      return;
+
+    final thermal = tState.thermalState.value;
+    final battery = bState.batteryLevel.batteryLevel;
+    final memory = mState.memoryUsage.memoryUsage;
+
+    if (thermal == null || battery == null || memory == null) {
+      context.showSnackBar('Vitals not available');
+      return;
+    }
+
+    context.read<LogDeviceVitalsCubit>().logDeviceVitals(
+      DeviceVitalsRequestParams(
+        thermalValue: thermal,
+        batteryLevel: battery,
+        memoryUsage: memory,
+      ),
+    );
+  }
+}
