@@ -17,6 +17,7 @@ const addDeviceVitalsValidator = Joi.object({
     }),
 
   thermal_value: Joi.number()
+    .strict()
     .min(0)
     .max(3)
     .required()
@@ -26,6 +27,7 @@ const addDeviceVitalsValidator = Joi.object({
     }),
 
   battery_level: Joi.number()
+    .strict()
     .min(0)
     .max(100)
     .required()
@@ -37,6 +39,7 @@ const addDeviceVitalsValidator = Joi.object({
     }),
 
   memory_usage: Joi.number()
+    .strict()
     .min(0)
     .max(100)
     .required()
