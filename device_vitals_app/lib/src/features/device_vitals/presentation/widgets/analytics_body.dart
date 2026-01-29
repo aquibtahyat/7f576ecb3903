@@ -39,7 +39,7 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
                 return const SizedBox.shrink();
               }
               return IconButton(
-                icon: Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh),
                 onPressed: () => _getAnalytics(),
               );
             },
@@ -48,11 +48,15 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
       ),
       body: SafeArea(
         child: BlocConsumer<GetAnalyticsCubit, GetAnalyticsState>(
+          listenWhen: (previous, current) =>
+              current is GetAnalyticsFailure &&
+              previous is! GetAnalyticsFailure,
           listener: (context, state) {
             if (state is GetAnalyticsFailure) {
               context.showSnackBar(state.message);
             }
           },
+          buildWhen: (previous, current) => previous != current,
           builder: (context, state) {
             if (state is GetAnalyticsLoading) {
               return const LoadingWidget();
@@ -84,7 +88,7 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
               );
             }
 
-            return CenterMessageWidget();
+            return const CenterMessageWidget();
           },
         ),
       ),
