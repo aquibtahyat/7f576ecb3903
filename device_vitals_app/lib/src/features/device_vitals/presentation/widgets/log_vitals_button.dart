@@ -15,10 +15,7 @@ class LogVitalsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child:       BlocConsumer<LogDeviceVitalsCubit, LogDeviceVitalsState>(
-        listenWhen: (previous, current) =>
-            current is LogDeviceVitalsFailure ||
-            current is LogDeviceVitalsSuccess,
+      child: BlocConsumer<LogDeviceVitalsCubit, LogDeviceVitalsState>(
         listener: (context, state) {
           if (state is LogDeviceVitalsFailure) {
             context.showSnackBar(state.message);
