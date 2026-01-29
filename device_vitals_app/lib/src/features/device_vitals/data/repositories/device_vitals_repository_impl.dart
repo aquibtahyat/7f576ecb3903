@@ -71,7 +71,12 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<void>> logDeviceVitals({
     required DeviceVitalsRequestEntity request,
   }) async {
-    final deviceId = await _deviceInfo.getUniqueId();
+    final String deviceId;
+    try {
+      deviceId = await _deviceInfo.getUniqueId();
+    } catch (e) {
+      return Failure.mapExceptionToFailure(e);
+    }
     String timestamp = _timeProvider.nowUtc().toIso8601String();
 
     final body = DeviceVitalsRequestMapper.toModel(
@@ -100,9 +105,8 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<List<DeviceVitalsEntity>>> getDeviceVitalsHistory({
     int limit = 100,
   }) async {
-    final deviceId = await _deviceInfo.getUniqueId();
-
     return asyncGuard(() async {
+      final deviceId = await _deviceInfo.getUniqueId();
       final response = await _remoteDataSource.getDeviceVitalsHistory(
         deviceId: deviceId,
         limit: limit,
@@ -116,9 +120,8 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<DeviceVitalsAnalyticsEntity>> getDeviceVitalsAnalytics({
     required DateRange dateRange,
   }) async {
-    final deviceId = await _deviceInfo.getUniqueId();
-
     return asyncGuard(() async {
+      final deviceId = await _deviceInfo.getUniqueId();
       final response = await _remoteDataSource.getDeviceVitalsAnalytics(
         deviceId: deviceId,
         dateRange: dateRange.value,
