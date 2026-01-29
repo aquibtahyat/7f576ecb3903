@@ -320,4 +320,35 @@ describe('Data Validation - Sensor Values', () => {
       expect(error).toBeUndefined();
     });
   });
+
+  describe('Timestamp Validation', () => {
+    test('should reject future timestamp', () => {
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 1);
+      const invalidData = {
+        device_id: 'device123',
+        timestamp: futureDate.toISOString(),
+        thermal_value: 2,
+        battery_level: 50,
+        memory_usage: 50
+      };
+      const { error } = addDeviceVitalsValidator.validate(invalidData);
+      expect(error).toBeDefined();
+      expect(error.details[0].path).toContain('timestamp');
+    });
+
+    test('should accept past timestamp', () => {
+      const pastDate = new Date();
+      pastDate.setFullYear(pastDate.getFullYear() - 1);
+      const validData = {
+        device_id: 'device123',
+        timestamp: pastDate.toISOString(),
+        thermal_value: 2,
+        battery_level: 50,
+        memory_usage: 50
+      };
+      const { error } = addDeviceVitalsValidator.validate(validData);
+      expect(error).toBeUndefined();
+    });
+  });
 });
