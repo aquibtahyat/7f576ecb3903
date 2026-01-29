@@ -1,7 +1,7 @@
 import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_analytics_entity.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_entity.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/metrics_row.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/metrics_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -51,7 +51,7 @@ class BatteryLevelAnalytics extends StatelessWidget {
                   plotAreaBackgroundColor: AppColors.screenBackground,
                   plotAreaBorderWidth: 0,
                   primaryXAxis: DateTimeAxis(
-                    dateFormat: DateFormat('MMM dd\nHH:mm'),
+                    dateFormat: DateFormat('HH:mma\nMMM dd'),
                     intervalType: DateTimeIntervalType.auto,
                     majorGridLines: MajorGridLines(width: 0),
                     minorGridLines: MinorGridLines(width: 0),
