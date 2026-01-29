@@ -8,6 +8,8 @@ class AppInputDecorationTheme {
   static final InputDecorationTheme lightInputDecorationTheme =
       InputDecorationTheme(
         errorMaxLines: 3,
+        fillColor: AppColors.surfaceBackground,
+        filled: true,
         prefixIconColor: AppColors.textTertiary,
         suffixIconColor: AppColors.textTertiary,
         labelStyle: AppTextTheme.lightTextTheme.bodyLarge,
