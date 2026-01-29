@@ -13,6 +13,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 - [Ambiguity 7: Sensor Failure Handling](#ambiguity-7-sensor-failure-handling)
 - [Ambiguity 8: Database/Storage Technology Choice](#ambiguity-8-databasestorage-technology-choice)
 - [Ambiguity 9: Date Range Options for Analytics](#ambiguity-9-date-range-options-for-analytics)
+- [Ambiguity 10: Backend Deployment](#ambiguity-10-backend-deployment)
 - [Questions to Ask the Project Manager](#questions-to-ask-the-project-manager)
 - [Requirements Compliance Notes](#requirements-compliance-notes)
 - [Summary](#summary)
@@ -178,6 +179,23 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
+## Ambiguity 10: Backend Deployment
+
+**Question**: The requirement said nothing about deployment. Should the backend be run only locally, or should it be deployed so the app can use a live API?
+
+**Options Considered**:
+- Option A: Run backend only locally; app uses localhost or machine IP for development/demo
+- Option B: Deploy backend to a cloud provider (e.g. Render) and set the app's base URL to the deployed API
+- Option C: Document both; leave deployment optional for the evaluator
+
+**Decision**: I chose Option B because it allows the app to work against a live backend without running the server locally; the backend is deployed (e.g. on Render) and the app's base URL is set to the deployed API endpoint so the app talks to the live backend.
+
+**Trade-offs**: Depends on an external service (e.g. Render) and requires MongoDB (e.g. Atlas) for the deployed backend; free tiers may have cold starts. Acceptable for demo and evaluation.
+
+**Assumptions**: Deployment was not specified in the requirement; deploying the backend and configuring the app base URL improves usability for evaluators and demos; the app can still be run against a local backend by changing the base URL.
+
+---
+
 ## Questions to Ask the Project Manager
 
 **Analytics**
@@ -225,6 +243,11 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 - Should the default range be configurable per user?
 - How long should historical data be retained on the backend?
 
+**Deployment**
+- Should the backend be deployed for production/demo, or run only locally?
+- Are there constraints on which cloud provider or hosting to use?
+- Should the app support switching between local and deployed backend (e.g. via config)?
+
 **General**
 - What's the expected number of concurrent devices/users? Should we implement rate limiting?
 - Do we need authentication/authorization for the API?
@@ -254,6 +277,10 @@ The following implementation details were added or clarified to align with the a
 - **README (root, backend, app)**: Updated to describe current behaviour: future timestamp validation, history default limit 100, MethodChannels-only sensor data, error handling, and test coverage (including timestamp validation).
 - **DECISIONS.md**: This document records ambiguities, assumptions, and questions per the requirement.
 - **ai_log.md**: Post-review updates section added to record post-check changes.
+
+### 4. Deployment
+
+- **Backend**: The backend can be deployed (e.g. on Render). When deployed, the app's base URL is set to the deployed API endpoint so the app uses the live backend. See root README and backend/app READMEs for deployment and configuration notes.
 
 ---
 
