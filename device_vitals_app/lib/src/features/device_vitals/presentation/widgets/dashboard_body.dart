@@ -184,7 +184,7 @@ class _DashboardBodyState extends State<DashboardBody>
     final canLog = thermal != null && battery != null && memory != null;
 
     if (!canLog) {
-      context.showSnackBar('Vitals are not available for log');
+      context.showSnackBar('Vitals aren’t available to log at the moment');
       return;
     }
 
