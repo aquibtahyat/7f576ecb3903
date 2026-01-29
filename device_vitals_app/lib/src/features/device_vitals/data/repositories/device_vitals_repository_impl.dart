@@ -1,9 +1,11 @@
 import 'package:device_vitals_app/src/core/base/repository.dart';
 import 'package:device_vitals_app/src/core/base/result.dart';
+import 'package:device_vitals_app/src/core/services/cache/cache_manager.dart';
 import 'package:device_vitals_app/src/core/services/device/device_info.dart';
 import 'package:device_vitals_app/src/core/services/time/time_service.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/data_sources/platform/platform_data_source.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/data_sources/remote/remote_data_source.dart';
+import 'package:device_vitals_app/src/features/device_vitals/data/hive/cached_device_vitals_request_model.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/battery_level_mapper.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/device_vitals_analytics_mapper.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/mappers/device_vitals_mapper.dart';
@@ -18,6 +20,7 @@ import 'package:device_vitals_app/src/features/device_vitals/domain/entities/mem
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/thermal_state_entity.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/enums/date_range_enum.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/repositories/device_vitals_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: DeviceVitalsRepository)
@@ -25,6 +28,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
     implements DeviceVitalsRepository {
   final PlatformDataSource _platformDataSource;
   final RemoteDataSource _remoteDataSource;
+  final CacheManager _cacheManager;
   final TimeProvider _timeProvider;
   final DeviceInfo _deviceInfo;
 
@@ -33,6 +37,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
     this._remoteDataSource,
     this._timeProvider,
     this._deviceInfo,
+    this._cacheManager,
   );
 
   @override
@@ -76,15 +81,26 @@ final class DeviceVitalsRepositoryImpl extends Repository
 
     String timestamp = _timeProvider.nowUtc().toIso8601String();
 
-    return asyncGuard(() async {
-      final body = DeviceVitalsRequestMapper.toModel(
-        entity: request,
-        timestamp: timestamp,
-        deviceId: deviceId,
-      );
+    final body = DeviceVitalsRequestMapper.toModel(
+      entity: request,
+      timestamp: timestamp,
+      deviceId: deviceId,
+    );
 
+    try {
       await _remoteDataSource.logDeviceVitals(body: body);
-    });
+    } on DioException {
+      await _cacheManager.saveLog(
+        CachedDeviceVitalsRequestModel.fromModel(body),
+      );
+      return Failure(
+        'Failed to log device vitals due to connection error, will try again later',
+      );
+    } catch (e) {
+      return Failure(e.toString());
+    }
+
+    return const Success(null);
   }
 
   @override

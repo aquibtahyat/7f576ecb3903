@@ -46,8 +46,10 @@ import '../../features/device_vitals/presentation/manager/get_thermal_state/get_
 import '../../features/device_vitals/presentation/manager/log_device_vitals/log_device_vitals_cubit.dart'
     as _i934;
 import '../network/network_module.dart' as _i200;
-import '../services/device/device_info.dart' as _i270;
-import '../services/time/time_service.dart' as _i187;
+import '../services/cache/cache_manager.dart' as _i45;
+import '../services/cache/cache_manager_impl.dart' as _i196;
+import '../services/device/device_info.dart' as _i288;
+import '../services/time/time_service.dart' as _i483;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -60,12 +62,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1062.PlatformDataSource>(
       () => _i1062.PlatformDataSource(),
     );
-    gh.lazySingleton<_i187.TimeProvider>(() => _i187.TimeProviderImpl());
-    gh.lazySingleton<_i270.DeviceInfo>(() => _i270.DeviceInfoImpl());
+    gh.lazySingleton<_i45.CacheManager>(() => _i196.CacheManagerImpl());
     gh.singleton<_i361.Dio>(
       () => networkModule.getDio(),
       instanceName: 'DIOCLIENT',
     );
+    gh.lazySingleton<_i288.DeviceInfo>(() => _i288.DeviceInfoImpl());
+    gh.lazySingleton<_i483.TimeProvider>(() => _i483.TimeProviderImpl());
     gh.lazySingleton<_i147.RemoteDataSource>(
       () => _i147.RemoteDataSource(gh<_i361.Dio>(instanceName: 'DIOCLIENT')),
     );
@@ -73,8 +76,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i757.DeviceVitalsRepositoryImpl(
         gh<_i1062.PlatformDataSource>(),
         gh<_i147.RemoteDataSource>(),
-        gh<_i187.TimeProvider>(),
-        gh<_i270.DeviceInfo>(),
+        gh<_i483.TimeProvider>(),
+        gh<_i288.DeviceInfo>(),
+        gh<_i45.CacheManager>(),
       ),
     );
     gh.factory<_i125.GetBatteryLevel>(
