@@ -1,3 +1,4 @@
+import 'package:device_vitals_app/src/core/pages/splash_page.dart';
 import 'package:device_vitals_app/src/core/routes/parts/shell_routes.dart';
 import 'package:device_vitals_app/src/core/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,16 @@ class AppRouter {
 
   static GoRouter get router => GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.dashboard,
-    debugLogDiagnostics: true, // turn off in prod if needed
+    initialLocation: AppRoutes.splash,
+    debugLogDiagnostics: true,
 
-    routes: [shellRoutes()],
+    routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        name: AppRoutes.splash,
+        pageBuilder: (context, state) => MaterialPage(child: SplashPage()),
+      ),
+      shellRoutes(),
+    ],
   );
 }
