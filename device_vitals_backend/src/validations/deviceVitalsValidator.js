@@ -9,10 +9,12 @@ const addDeviceVitalsValidator = Joi.object({
     }),
   timestamp: Joi.date()
     .iso()
+    .max('now')
     .required()
     .messages({
       "date.base": "timestamp must be a valid date",
       "date.format": "timestamp must be in ISO format",
+      "date.max": "timestamp cannot be in the future",
       "any.required": "timestamp is required"
     }),
 

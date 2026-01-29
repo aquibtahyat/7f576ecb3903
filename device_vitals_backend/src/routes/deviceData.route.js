@@ -171,8 +171,8 @@ router.get("/analytics/:id",getAnalyticsController)
  *           type: integer
  *           minimum: 1
  *           maximum: 100
- *           default: 10
- *         description: Number of records per page
+ *           default: 100
+ *         description: Number of records per page (default: latest 100 entries)
  *     responses:
  *       200:
  *         description: Device vitals fetched successfully
