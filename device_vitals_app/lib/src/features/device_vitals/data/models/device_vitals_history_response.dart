@@ -1,4 +1,4 @@
-import 'package:device_vitals_app/src/core/page/pagination.dart';
+import 'package:device_vitals_app/src/core/pagination/pagination.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/models/device_vitals_model.dart';
 
 class DeviceVitalsHistoryResponse {
