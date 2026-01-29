@@ -1,5 +1,6 @@
 package com.example.device_vitals_app
 
+import android.os.Build
 import androidx.annotation.NonNull
 import android.app.ActivityManager
 import io.flutter.embedding.android.FlutterActivity
@@ -10,8 +11,6 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.PowerManager
 
 
@@ -25,6 +24,19 @@ class MainActivity : FlutterActivity() {
             CHANNEL
         ).setMethodCallHandler { call, result ->
             when (call.method) {
+                "getThermalStatus" -> {
+                    try {
+                        val thermalStatus = getThermalStatus()
+                        if (thermalStatus >= 0) {
+                            result.success(thermalStatus)
+                        } else {
+                            result.error("FAIL", "Thermal status not available", null)
+                        }
+                    } catch (e: Exception) {
+                        result.error("FAIL", "Thermal error: ${e.message}", null)
+                    }
+                }
+
                 "getBatteryLevel" -> {
                     try {
                         val batteryLevel = getBatteryLevel()
@@ -51,27 +63,51 @@ class MainActivity : FlutterActivity() {
                     }
                 }
 
-                "getThermalStatus" -> {
-                    try {
-                        val thermalStatus = getThermalStatus()
-                        if (thermalStatus >= 0) {
-                            result.success(thermalStatus)
-                        } else {
-                            result.error("FAIL", "Thermal status not available", null)
-                        }
-                    } catch (e: Exception) {
-                        result.error("FAIL", "Thermal error: ${e.message}", null)
-                    }
-                }
-
                 else -> result.notImplemented()
             }
         }
     }
 
+    private fun getThermalStatus(): Int {
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        var level = -1
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val headroom = powerManager.getThermalHeadroom(0)
+
+            if (headroom >= 0f) {
+                level = when {
+                    headroom >= 0.8f -> 0
+                    headroom >= 0.5f -> 1
+                    headroom >= 0.2f -> 2
+                    else -> 3
+                }
+            }
+        }
+
+        if (level == -1 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val statusLevel = when (powerManager.currentThermalStatus) {
+                PowerManager.THERMAL_STATUS_NONE -> 0
+                PowerManager.THERMAL_STATUS_LIGHT -> 1
+                PowerManager.THERMAL_STATUS_MODERATE -> 2
+                PowerManager.THERMAL_STATUS_SEVERE,
+                PowerManager.THERMAL_STATUS_CRITICAL,
+                PowerManager.THERMAL_STATUS_EMERGENCY,
+                PowerManager.THERMAL_STATUS_SHUTDOWN -> 3
+
+                else -> -1
+            }
+
+            if (statusLevel != -1) {
+                level = statusLevel
+            }
+        }
+        return level
+    }
+
     private fun getBatteryLevel(): Int {
         val batteryLevel: Int
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
             batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
         } else {
@@ -100,22 +136,5 @@ class MainActivity : FlutterActivity() {
         val percentage = (usedMemory / totalMemory) * 100
 
         return percentage.toInt()
-    }
-
-    private fun getThermalStatus(): Int {
-        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
-            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-            return when (powerManager.currentThermalStatus) {
-                PowerManager.THERMAL_STATUS_NONE -> 0
-                PowerManager.THERMAL_STATUS_LIGHT -> 1
-                PowerManager.THERMAL_STATUS_MODERATE -> 2
-                PowerManager.THERMAL_STATUS_SEVERE,
-                PowerManager.THERMAL_STATUS_CRITICAL,
-                PowerManager.THERMAL_STATUS_EMERGENCY -> 3
-
-                else -> -1
-            }
-        }
-        return -1
     }
 }
