@@ -1,4 +1,3 @@
-import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/center_message_widget.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/loading_widget.dart';
@@ -24,11 +23,29 @@ class _HistoryBodyState extends State<HistoryBody> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _getHistory,
-      child: Scaffold(
-        backgroundColor: AppColors.screenBackground,
-        body: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('History'),
+        elevation: 1,
+        centerTitle: true,
+        actions: [
+          BlocBuilder<GetHistoryCubit, GetHistoryState>(
+            builder: (context, state) {
+              if (state is GetHistoryLoading) {
+                return const SizedBox.shrink();
+              }
+
+              return IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: _getHistory,
+              );
+            },
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _getHistory,
+        child: SafeArea(
           child: BlocConsumer<GetHistoryCubit, GetHistoryState>(
             listener: (context, state) {
               if (state is GetHistoryFailure) {
@@ -41,27 +58,15 @@ class _HistoryBodyState extends State<HistoryBody> {
               } else if (state is GetHistorySuccess) {
                 final deviceVitalsHistory = state.history;
                 if (deviceVitalsHistory.isEmpty) {
-                  return ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: const [
-                      CenterMessageWidget(),
-                    ],
-                  );
+                  return CenterMessageWidget();
                 }
-                return Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ListView.separated(
-                    itemCount: deviceVitalsHistory.length,
-                    itemBuilder: (context, index) =>
-                        HistoryItemCard(
-                          deviceVitals: deviceVitalsHistory[index],
-                        ),
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
-                  ),
+                return ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: deviceVitalsHistory.length,
+                  itemBuilder: (context, index) =>
+                      HistoryItemCard(deviceVitals: deviceVitalsHistory[index]),
                 );
               }
-
               return CenterMessageWidget();
             },
           ),

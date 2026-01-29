@@ -1,4 +1,3 @@
-import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_state.dart';
@@ -79,14 +78,19 @@ class _DashboardBodyState extends State<DashboardBody>
           },
         ),
       ],
-      child: RefreshIndicator(
-        onRefresh: _getDashboardData,
-        child: Scaffold(
-          backgroundColor: AppColors.screenBackground,
-          body: SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Device Vitals'),
+          elevation: 1,
+          centerTitle: true,
+        ),
+        body: RefreshIndicator(
+          onRefresh: _getDashboardData,
+          child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     ThermalStateCard(),
