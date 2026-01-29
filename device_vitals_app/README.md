@@ -1,6 +1,6 @@
 # Device Vitals Flutter App
 
-A Flutter mobile application that monitors device sensor data (thermal state, battery level, and memory usage) using native platform APIs and syncs with a backend service.
+A Flutter mobile application that monitors device vitals (thermal state, battery level, and memory usage) using native platform APIs and syncs with a backend service.
 
 ## 📋 Table of Contents
 
@@ -20,9 +20,9 @@ A Flutter mobile application that monitors device sensor data (thermal state, ba
 ## 🎯 Overview
 
 Device Vitals is a Flutter application that:
-- Retrieves device sensor data using native MethodChannels (Android Kotlin / iOS Swift)
-- Displays real-time sensor readings on a dashboard
-- Logs sensor data to a backend API
+- Retrieves device vitals (thermal state, battery level, memory usage) using native MethodChannels (Android Kotlin / iOS Swift)
+- Displays current vitals on a dashboard
+- Logs vitals data to a backend API
 - Shows historical data with pagination
 - Provides analytics with charts and trends
 - Supports best-effort background sync of cached logs
@@ -31,13 +31,13 @@ Device Vitals is a Flutter application that:
 ## ✨ Features
 
 ### Core Features
-- ✅ **Real-time Sensor Monitoring**
+- ✅ **Device Vitals**
   - Thermal state (0-3 scale)
   - Battery level (0-100%)
   - Memory usage (0-100%)
 
 - ✅ **Dashboard Screen**
-  - Live sensor readings with visual indicators
+  - Current vitals with visual indicators
   - Pull-to-refresh functionality
   - Manual logging button with feedback
 
@@ -60,9 +60,9 @@ Device Vitals is a Flutter application that:
 
 - ✅ **Error Handling**
   - Backend unreachable: Snackbar with user-friendly message (DioErrorHandler)
-  - PlatformException from native sensors: Snackbar with platform message
+  - PlatformException from native platform APIs: Snackbar with platform message
   - Network timeouts: Dio connect/receive timeout 30s; timeout errors shown in Snackbar
-  - Graceful degradation (e.g. failed sensors show retry; failed log cached for offline sync)
+  - Graceful degradation (e.g. failed vitals fetch shows retry; failed log cached for offline sync)
 
 ## 🏗️ Architecture
 
@@ -344,7 +344,7 @@ Tests are located in the `test/` directory:
 - **hive_ce**: Local storage
 - **workmanager**: Background tasks
 - **syncfusion_flutter_charts**: Charts and graphs
-- **device_info_plus**: Device ID only (Android ID / iOS `identifierForVendor`). Sensor data (thermal, battery, memory) comes from MethodChannels, not this package.
+- **device_info_plus**: Device ID only (Android ID / iOS `identifierForVendor`). Vitals (thermal, battery, memory) come from MethodChannels, not this package.
 
 ### Code Generation
 
@@ -462,23 +462,6 @@ flutter pub run build_runner build --delete-conflicting-outputs
 - Background tasks may not work in debug mode
 - Test on release build or physical device
 - Ensure proper permissions are granted
-
-## 📱 App Screenshots
-
-### Dashboard Screen
-- Real-time sensor readings
-- Visual indicators for each metric
-- Log button with feedback
-
-### History Screen
-- Fetches latest 100 entries from GET /api/vitals/:id
-- Card-based UI with thermal label, battery %, memory % per entry
-- Pull-to-refresh and app bar refresh; timestamp display
-
-### Analytics Screen
-- Interactive charts
-- Date range selector
-- Metrics display (min/max/avg)
 
 ## 🔒 Permissions
 

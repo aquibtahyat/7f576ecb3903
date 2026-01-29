@@ -1,18 +1,18 @@
 # Device Vitals Monitor
 
-A full-stack mobile application that monitors device sensor data (thermal state, battery level, and memory usage) and logs it to a backend service with analytics capabilities.
+A full-stack mobile application that monitors device vitals (thermal state, battery level, and memory usage) and logs them to a backend service with analytics capabilities.
 
 ## 🎯 Overview
 
 Device Vitals Monitor consists of:
 
-- **Flutter Mobile App**: Retrieves device sensor data using native platform APIs (Android Kotlin / iOS Swift) via MethodChannels, displays real-time readings, and syncs with the backend
+- **Flutter Mobile App**: Retrieves device vitals (thermal state, battery level, memory usage) using native platform APIs (Android Kotlin / iOS Swift) via MethodChannels, displays current readings on the dashboard, and syncs with the backend
 - **Node.js Backend API**: RESTful API with MongoDB persistence, data validation, and analytics endpoints
 
 ## ✨ Key Features
 
-- ✅ Real-time device sensor monitoring (thermal state, battery level, memory usage)
-- ✅ Native platform integration via MethodChannels (Android & iOS) — no 3rd-party sensor packages
+- ✅ Device vitals monitoring (thermal state, battery level, memory usage)
+- ✅ Native platform integration via MethodChannels (Android & iOS) — no 3rd-party packages for vitals
 - ✅ RESTful API backend with persistent MongoDB storage
 - ✅ Data validation: thermal 0–3, battery/memory 0–100, ISO timestamp, future timestamps rejected
 - ✅ Analytics screen with rolling averages, min/max, and charts (GET /api/vitals/analytics/:id)
@@ -78,10 +78,10 @@ The backend is deployed on [Render](https://render.com) at **https://sevenf576ec
 
 ## 🔗 API Documentation
 
-Once the backend is running, interactive Swagger documentation is available at:
-```
-http://localhost:4000/api-docs
-```
+The backend is deployed on [Render](https://render.com). Interactive Swagger documentation is available at:
+
+- **Deployed (live):** https://sevenf576ecb3903.onrender.com/api-docs
+- **Local:** http://localhost:4000/api-docs (when running the backend locally)
 
 **Main Endpoints:**
 - `POST /api/vitals` - Log device vitals (validates thermal 0–3, battery 0–100, memory 0–100, ISO timestamp, rejects future timestamps)
