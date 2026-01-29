@@ -24,7 +24,7 @@ Device Vitals Monitor consists of:
 ## 🛠️ Tech Stack
 
 **Mobile App:**
-- Flutter 3.9.0+ with BLoC state management
+- Flutter 3.35.0 with BLoC state management
 - Local Storage: Hive
 - Background Tasks: WorkManager
 
@@ -37,7 +37,7 @@ Device Vitals Monitor consists of:
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Flutter SDK 3.9.0+
+- Flutter SDK 3.35.0
 - Node.js 18.x+
 - MongoDB 6.0+
 
@@ -67,7 +67,7 @@ The backend is deployed on [Render](https://render.com) at **https://sevenf576ec
 ## 📱 Platform Support
 
 - **Android**: ✅ Fully implemented (Kotlin, API 21+)
-- **iOS**: ✅ Fully implemented (Swift, iOS 12.0+)
+- **iOS**: ✅ Fully implemented (Swift, iOS 14.0+)
 
 ## 📚 Documentation
 
