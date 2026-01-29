@@ -33,6 +33,8 @@ import '../../features/device_vitals/domain/use_cases/get_thermal_state.dart'
     as _i643;
 import '../../features/device_vitals/domain/use_cases/log_device_vitals.dart'
     as _i6;
+import '../../features/device_vitals/presentation/manager/auto_log_timer/auto_log_timer_cubit.dart'
+    as _i901;
 import '../../features/device_vitals/presentation/manager/get_analytics/get_analytics_cubit.dart'
     as _i963;
 import '../../features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart'
@@ -67,8 +69,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => networkModule.getDio(),
       instanceName: 'DIOCLIENT',
     );
-    gh.lazySingleton<_i288.DeviceInfo>(() => _i288.DeviceInfoImpl());
     gh.lazySingleton<_i483.TimeProvider>(() => _i483.TimeProviderImpl());
+    gh.lazySingleton<_i288.DeviceInfo>(
+      () => _i288.DeviceInfoImpl(gh<_i45.CacheManager>()),
+    );
     gh.lazySingleton<_i147.RemoteDataSource>(
       () => _i147.RemoteDataSource(gh<_i361.Dio>(instanceName: 'DIOCLIENT')),
     );
@@ -111,6 +115,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i934.LogDeviceVitalsCubit>(
       () => _i934.LogDeviceVitalsCubit(gh<_i6.LogDeviceVitals>()),
     );
+    gh.factory<_i901.AutoLogTimerCubit>(() => _i901.AutoLogTimerCubit());
     gh.factory<_i101.GetMemoryUsageCubit>(
       () => _i101.GetMemoryUsageCubit(useCase: gh<_i186.GetMemoryUsage>()),
     );
