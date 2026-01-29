@@ -11,13 +11,13 @@ class MetricsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
 
-    return GridView.extent(
-      maxCrossAxisExtent: MediaQuery.of(context).size.width / 2 - 12,
+    return GridView.count(
+      crossAxisCount: 2,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
-      childAspectRatio: 2.4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      childAspectRatio: 1.8,
       children: [
         _tile(theme, 'Min', metrics.min.toStringAsFixed(1)),
         _tile(theme, 'Max', metrics.max.toStringAsFixed(1)),
