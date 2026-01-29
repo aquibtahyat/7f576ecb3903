@@ -60,17 +60,14 @@ class LogVitalsButton extends StatelessWidget {
     final bState = context.read<GetBatteryLevelCubit>().state;
     final mState = context.read<GetMemoryUsageCubit>().state;
 
-    if (tState is! GetThermalStateSuccess ||
-        bState is! GetBatteryLevelSuccess ||
-        mState is! GetMemoryUsageSuccess)
-      return;
+    final thermal = tState is GetThermalStateSuccess ? tState.thermalState.value : null;
+    final battery = bState is GetBatteryLevelSuccess ? bState.batteryLevel.batteryLevel : null;
+    final memory = mState is GetMemoryUsageSuccess ? mState.memoryUsage.memoryUsage : null;
 
-    final thermal = tState.thermalState.value;
-    final battery = bState.batteryLevel.batteryLevel;
-    final memory = mState.memoryUsage.memoryUsage;
+    final canLog = thermal != null && battery != null && memory != null;
 
-    if (thermal == null || battery == null || memory == null) {
-      context.showSnackBar('Vitals not available');
+    if (!canLog) {
+      context.showSnackBar('Vitals are not available for log');
       return;
     }
 
