@@ -88,10 +88,10 @@ src/
 
 ## ⚙️ Configuration
 
-Create a `.env` file in the `device_vitals_backend` directory:
+Create a `.env` file in the `device_vitals_backend` directory (see `.env.example`)
 
 ```env
-DATABASE_URL=mongodb://localhost:27017/device_vitals
+DATABASE_URL=<your_mongodb_connection_string>
 PORT=4000
 NODE_ENV=development
 ```
@@ -103,18 +103,6 @@ NODE_ENV=development
 | `DATABASE_URL` | MongoDB connection string | - | Yes |
 | `PORT` | Server port | 4000 | No |
 | `NODE_ENV` | Environment (development/production) | development | No |
-
-### MongoDB Connection String Examples
-
-**Local MongoDB:**
-```
-DATABASE_URL=mongodb://localhost:27017/device_vitals
-```
-
-**MongoDB Atlas (Cloud):**
-```
-DATABASE_URL=mongodb+srv://username:password@cluster.mongodb.net/device_vitals?retryWrites=true&w=majority
-```
 
 ## 🚀 Running the Server
 
