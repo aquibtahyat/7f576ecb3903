@@ -95,7 +95,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
         'Failed to log device vitals due to connection error, will try again later',
       );
     } catch (e) {
-      return Failure(e.toString());
+      return Failure('Failed to log device vitals');
     }
 
     return const Success(null);
