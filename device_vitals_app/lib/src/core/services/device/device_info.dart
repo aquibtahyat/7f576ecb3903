@@ -1,17 +1,38 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:device_vitals_app/src/core/services/cache/cache_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class DeviceInfo {
-  Future<String?> getDeviceId();
+  Future<String> getUniqueId();
 }
 
 @LazySingleton(as: DeviceInfo)
 class DeviceInfoImpl implements DeviceInfo {
+  DeviceInfoImpl(this._cacheManager);
+
+  final CacheManager _cacheManager;
+
   @override
-  Future<String?> getDeviceId() async {
+  Future<String> getUniqueId() async {
+    final cached = await _cacheManager.getUniqueId(CacheKey.uniqueId);
+    if (cached != null && cached.isNotEmpty) return cached;
+
+    final platformId = await _getPlatformId();
+    if (platformId != null && platformId.isNotEmpty) {
+      await _cacheManager.saveUniqueId(CacheKey.uniqueId, platformId);
+      return platformId;
+    }
+
+    final generated = const Uuid().v4();
+    await _cacheManager.saveUniqueId(CacheKey.uniqueId, generated);
+    return generated;
+  }
+
+  Future<String?> _getPlatformId() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     try {
@@ -25,7 +46,6 @@ class DeviceInfoImpl implements DeviceInfo {
     } catch (e) {
       debugPrint(e.toString());
     }
-
-    return '';
+    return null;
   }
 }
