@@ -109,13 +109,13 @@ lib/
 
 ## 📦 Prerequisites
 
-- **Flutter SDK**: 3.9.0 or higher
+- **Flutter SDK**: 3.35.0
 - **Dart SDK**: 3.9.0 or higher
 - **Android Studio** (for Android development)
   - Android SDK 21+ (Android 5.0+)
   - Kotlin support
 - **Xcode** (for iOS development, macOS only)
-  - iOS 12.0+
+  - iOS 14.0+
   - Swift support
 - **Backend API**: Running instance (see [Backend README](../device_vitals_backend/README.md))
 
@@ -178,7 +178,7 @@ This project uses the backend deployed on Render at `https://sevenf576ecb3903.on
 
 #### iOS
 
-**Minimum iOS**: 12.0
+**Minimum iOS**: 14.0
 
 **Info.plist** (already configured):
 - Battery monitoring enabled
