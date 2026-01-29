@@ -1,5 +1,7 @@
 import 'package:device_vitals_app/src/features/device_vitals/data/hive/cached_device_vitals_request_model.dart';
 
+enum CacheKey { uniqueId }
+
 abstract class CacheManager {
   Future<String> saveLog(CachedDeviceVitalsRequestModel vitalsLog);
 
@@ -10,4 +12,8 @@ abstract class CacheManager {
   Future<void> removeLog(String key);
 
   Future<void> clearLogs();
+
+  Future<void> saveUniqueId(CacheKey key, String value);
+
+  Future<String?> getUniqueId(CacheKey key);
 }

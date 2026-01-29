@@ -6,4 +6,5 @@ class AppConstants {
   static const String getBatteryLevelMethod = 'getBatteryLevel';
   static const String getMemoryUsageMethod = 'getMemoryUsage';
   static const String logBox = 'logBox';
+  static const String deviceBox = 'deviceBox';
 }

@@ -71,14 +71,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<void>> logDeviceVitals({
     required DeviceVitalsRequestEntity request,
   }) async {
-    final deviceId = await _deviceInfo.getDeviceId();
-
-    if (deviceId == null || deviceId.isEmpty) {
-      return const Failure(
-        'Device ID not found on this device. Unable to load history',
-      );
-    }
-
+    final deviceId = await _deviceInfo.getUniqueId();
     String timestamp = _timeProvider.nowUtc().toIso8601String();
 
     final body = DeviceVitalsRequestMapper.toModel(
@@ -107,13 +100,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<List<DeviceVitalsEntity>>> getDeviceVitalsHistory({
     int limit = 100,
   }) async {
-    final deviceId = await _deviceInfo.getDeviceId();
-
-    if (deviceId == null || deviceId.isEmpty) {
-      return const Failure(
-        'Device ID not found on this device. Unable to load history',
-      );
-    }
+    final deviceId = await _deviceInfo.getUniqueId();
 
     return asyncGuard(() async {
       final response = await _remoteDataSource.getDeviceVitalsHistory(
@@ -129,13 +116,7 @@ final class DeviceVitalsRepositoryImpl extends Repository
   Future<Result<DeviceVitalsAnalyticsEntity>> getDeviceVitalsAnalytics({
     required DateRange dateRange,
   }) async {
-    final deviceId = await _deviceInfo.getDeviceId();
-
-    if (deviceId == null || deviceId.isEmpty) {
-      return const Failure(
-        'Device ID not found on this device. Unable to load analytics.',
-      );
-    }
+    final deviceId = await _deviceInfo.getUniqueId();
 
     return asyncGuard(() async {
       final response = await _remoteDataSource.getDeviceVitalsAnalytics(

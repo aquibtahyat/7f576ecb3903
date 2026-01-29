@@ -4,15 +4,18 @@
 
 import 'package:hive_ce/hive_ce.dart';
 import 'package:device_vitals_app/src/features/device_vitals/data/hive/cached_device_vitals_request_model.dart';
+import 'package:device_vitals_app/src/features/device_vitals/data/hive/cached_unique_id_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
     registerAdapter(CachedDeviceVitalsRequestModelAdapter());
+    registerAdapter(CachedUniqueIdModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
     registerAdapter(CachedDeviceVitalsRequestModelAdapter());
+    registerAdapter(CachedUniqueIdModelAdapter());
   }
 }
