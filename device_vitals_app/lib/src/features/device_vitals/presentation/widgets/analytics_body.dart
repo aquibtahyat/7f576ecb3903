@@ -5,7 +5,7 @@ import 'package:device_vitals_app/src/features/device_vitals/domain/enums/date_r
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_analytics/get_analytics_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_analytics/get_analytics_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/battery_level_analytics.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/date_range_selection_row.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/data_range_selector.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/memory_usage_analytics.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/thermal_state_analytics.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +27,26 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _getAnalytics,
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Analytics'),
+        elevation: 1,
+        centerTitle: true,
+        actions: [
+          BlocBuilder<GetAnalyticsCubit, GetAnalyticsState>(
+            builder: (context, state) {
+              if (state is GetAnalyticsLoading) {
+                return const SizedBox.shrink();
+              }
+              return IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () => _getAnalytics(),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
         child: BlocConsumer<GetAnalyticsCubit, GetAnalyticsState>(
           listener: (context, state) {
             if (state is GetAnalyticsFailure) {
@@ -40,25 +57,30 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
             if (state is GetAnalyticsLoading) {
               return const LoadingWidget();
             } else if (state is GetAnalyticsSuccess) {
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      DateRangeRow(
-                        value: state.dateRange,
-                        onDateRangeChanged: (dateRange) {
-                          _getAnalytics(dateRange: dateRange);
-                        },
-                      ),
-                      ThermalStateAnalytics(analytics: state.analytics),
-                      const SizedBox(height: 16),
-                      BatteryLevelAnalytics(analytics: state.analytics),
-                      const SizedBox(height: 16),
-                      MemoryUsageAnalytics(analytics: state.analytics),
-                    ],
+              return Column(
+                children: [
+                  DateRangeSelector(
+                    value: state.dateRange,
+                    onDateRangeChanged: (dateRange) {
+                      _getAnalytics(dateRange: dateRange);
+                    },
                   ),
-                ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => _getAnalytics(),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          children: [
+                            ThermalStateAnalytics(analytics: state.analytics),
+                            BatteryLevelAnalytics(analytics: state.analytics),
+                            MemoryUsageAnalytics(analytics: state.analytics),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
 
