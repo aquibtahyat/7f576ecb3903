@@ -64,6 +64,7 @@ class MemoryUsageAnalytics extends StatelessWidget {
                   ),
                   series: [
                     SplineSeries<DeviceVitalsEntity, DateTime>(
+                      splineType: SplineType.monotonic,
                       dataSource: analytics.series,
                       xValueMapper: (DeviceVitalsEntity series, _) =>
                           series.timestamp,
