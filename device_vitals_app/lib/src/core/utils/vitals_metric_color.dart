@@ -11,8 +11,8 @@ class VitalMetricColor {
     if (isFailed) return AppColors.error;
     if (value == null) return AppColors.grey;
     final r = value.toDouble() / 3;
-    if (r <= 0.33) return AppColors.success;
-    if (r <= 0.67) return AppColors.warning;
+    if (r <= 0.67) return AppColors.success;
+    if (r <= 0.99) return AppColors.warning;
     return AppColors.error;
   }
 
