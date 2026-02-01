@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 class AppSnackBarTheme {
   AppSnackBarTheme._();
 
-  static final SnackBarThemeData lightSnackBarTheme = SnackBarThemeData(
+  static final SnackBarThemeData snackBarTheme = SnackBarThemeData(
     backgroundColor: AppColors.primaryLight,
-    contentTextStyle: AppTextTheme.lightTextTheme.labelLarge,
+    contentTextStyle: AppTextTheme.textTheme.labelLarge,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     behavior: SnackBarBehavior.floating,
     elevation: 6,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppFABTheme {
   AppFABTheme._();
 
-  static final FloatingActionButtonThemeData lightFABTheme =
+  static final FloatingActionButtonThemeData fabTheme =
       FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,

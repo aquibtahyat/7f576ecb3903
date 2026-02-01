@@ -87,15 +87,15 @@ final class DeviceVitalsRepositoryImpl extends Repository
 
     try {
       await _remoteDataSource.logDeviceVitals(body: body);
-    } on DioException {
+    } on DioException catch (_) {
       await _cacheManager.saveLog(
         CachedDeviceVitalsRequestModel.fromModel(body),
       );
-      return Failure(
+      return const Failure(
         'Failed to log device vitals due to connection error, will try again later',
       );
     } catch (e) {
-      return Failure('Failed to log device vitals');
+      return Failure.mapExceptionToFailure(e);
     }
 
     return const Success(null);
@@ -128,6 +128,22 @@ final class DeviceVitalsRepositoryImpl extends Repository
       );
 
       return DeviceVitalsAnalyticsMapper.toEntity(response);
+    });
+  }
+
+  @override
+  Future<Result<bool>> changeAutoLogPreference({required bool value}) async {
+    return asyncGuard(() async {
+      await _cacheManager.changeAutoLogPreference(value);
+      return value;
+    });
+  }
+
+  @override
+  Future<Result<bool>> getAutoLogPreference() async {
+    return asyncGuard(() async {
+      final value = await _cacheManager.getAutoLogPreference();
+      return value;
     });
   }
 }

@@ -42,7 +42,7 @@ class DioErrorHandler {
       case 403:
         return "Access denied. You do not have permission to perform this action.";
       case 404:
-        return "No data found. Please try again later.";
+        return "No data found.";
       case 500:
         return "Server error. Please try again later.";
       case 502:

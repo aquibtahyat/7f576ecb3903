@@ -5,20 +5,20 @@ sealed class GetThermalStateState extends Equatable {
   const GetThermalStateState();
 }
 
-class GetThermalStateInitial extends GetThermalStateState {
+final class GetThermalStateInitial extends GetThermalStateState {
   const GetThermalStateInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetThermalStateLoading extends GetThermalStateState {
+final class GetThermalStateLoading extends GetThermalStateState {
   const GetThermalStateLoading();
   @override
   List<Object?> get props => [];
 }
 
-class GetThermalStateSuccess extends GetThermalStateState {
+final class GetThermalStateSuccess extends GetThermalStateState {
   final ThermalStateEntity thermalState;
   const GetThermalStateSuccess(this.thermalState);
 
@@ -26,7 +26,7 @@ class GetThermalStateSuccess extends GetThermalStateState {
   List<Object?> get props => [thermalState];
 }
 
-class GetThermalStateFailure extends GetThermalStateState {
+final class GetThermalStateFailure extends GetThermalStateState {
   final String message;
   final bool isLoadAll;
 

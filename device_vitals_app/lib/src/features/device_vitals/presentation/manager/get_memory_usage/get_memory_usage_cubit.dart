@@ -6,7 +6,7 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class GetMemoryUsageCubit extends Cubit<GetMemoryUsageState> {
-  GetMemoryUsageCubit({required this.useCase}) : super(GetMemoryUsageInitial());
+  GetMemoryUsageCubit({required this.useCase}) : super(const GetMemoryUsageInitial());
 
   final GetMemoryUsage useCase;
 

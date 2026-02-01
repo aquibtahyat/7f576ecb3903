@@ -4,27 +4,29 @@ sealed class LogDeviceVitalsState extends Equatable {
   const LogDeviceVitalsState();
 }
 
-class LogDeviceVitalsInitial extends LogDeviceVitalsState {
+final class LogDeviceVitalsInitial extends LogDeviceVitalsState {
   const LogDeviceVitalsInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class LogDeviceVitalsLoading extends LogDeviceVitalsState {
+final class LogDeviceVitalsLoading extends LogDeviceVitalsState {
   const LogDeviceVitalsLoading();
 
   @override
   List<Object?> get props => [];
 }
 
-class LogDeviceVitalsSuccess extends LogDeviceVitalsState {
-  const LogDeviceVitalsSuccess();
+final class LogDeviceVitalsSuccess extends LogDeviceVitalsState {
+  final bool isAutoLog;
+
+  const LogDeviceVitalsSuccess({this.isAutoLog = false});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [isAutoLog];
 }
 
-class LogDeviceVitalsFailure extends LogDeviceVitalsState {
+final class LogDeviceVitalsFailure extends LogDeviceVitalsState {
   final String message;
   const LogDeviceVitalsFailure(this.message);
 

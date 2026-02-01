@@ -5,21 +5,21 @@ sealed class GetHistoryState extends Equatable {
   const GetHistoryState();
 }
 
-class GetHistoryInitial extends GetHistoryState {
+final class GetHistoryInitial extends GetHistoryState {
   const GetHistoryInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetHistoryLoading extends GetHistoryState {
+final class GetHistoryLoading extends GetHistoryState {
   const GetHistoryLoading();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetHistorySuccess extends GetHistoryState {
+final class GetHistorySuccess extends GetHistoryState {
   final List<DeviceVitalsEntity> history;
   const GetHistorySuccess(this.history);
 
@@ -27,7 +27,7 @@ class GetHistorySuccess extends GetHistoryState {
   List<Object?> get props => [history];
 }
 
-class GetHistoryFailure extends GetHistoryState {
+final class GetHistoryFailure extends GetHistoryState {
   final String message;
 
   const GetHistoryFailure(this.message);

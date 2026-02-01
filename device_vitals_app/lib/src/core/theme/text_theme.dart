@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppTextTheme {
   AppTextTheme._();
 
-  static final TextTheme lightTextTheme = TextTheme(
+  static final TextTheme textTheme = TextTheme(
     headlineLarge: TextStyle(
       fontFamily: 'Poppins',
       fontSize: 32,

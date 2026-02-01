@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 class AppInputDecorationTheme {
   AppInputDecorationTheme._();
 
-  static final InputDecorationTheme lightInputDecorationTheme =
+  static final InputDecorationTheme inputDecorationTheme =
       InputDecorationTheme(
         errorMaxLines: 3,
         fillColor: AppColors.surfaceBackground,
         filled: true,
         prefixIconColor: AppColors.textTertiary,
         suffixIconColor: AppColors.textTertiary,
-        labelStyle: AppTextTheme.lightTextTheme.bodyLarge,
-        floatingLabelStyle: AppTextTheme.lightTextTheme.bodyLarge,
-        errorStyle: AppTextTheme.lightTextTheme.bodyLarge?.copyWith(
+        labelStyle: AppTextTheme.textTheme.bodyLarge,
+        floatingLabelStyle: AppTextTheme.textTheme.bodyLarge,
+        errorStyle: AppTextTheme.textTheme.bodyLarge?.copyWith(
           color: AppColors.error,
         ),
-        hintStyle: AppTextTheme.lightTextTheme.bodySmall,
+        hintStyle: AppTextTheme.textTheme.bodySmall,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 1),

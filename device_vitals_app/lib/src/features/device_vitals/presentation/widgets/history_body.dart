@@ -1,3 +1,4 @@
+import 'package:device_vitals_app/src/core/theme/app_colors.dart';
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/center_message_widget.dart';
 import 'package:device_vitals_app/src/core/utils/widgets/loading_widget.dart';
@@ -18,7 +19,12 @@ class _HistoryBodyState extends State<HistoryBody> {
   @override
   void initState() {
     super.initState();
-    _getHistory();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _getHistory();
+      }
+    });
   }
 
   @override
@@ -60,11 +66,46 @@ class _HistoryBodyState extends State<HistoryBody> {
                 if (deviceVitalsHistory.isEmpty) {
                   return CenterMessageWidget();
                 }
-                return ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: deviceVitalsHistory.length,
-                  itemBuilder: (context, index) =>
-                      HistoryItemCard(deviceVitals: deviceVitalsHistory[index]),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      color: AppColors.primary.withAlpha(20),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Last ${deviceVitalsHistory.length} entries',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 16),
+                          itemCount: deviceVitalsHistory.length,
+                          itemBuilder: (context, index) => HistoryItemCard(
+                            deviceVitals: deviceVitalsHistory[index],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               }
               return CenterMessageWidget();

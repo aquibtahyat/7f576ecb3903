@@ -6,7 +6,7 @@ sealed class GetAnalyticsState extends Equatable {
   const GetAnalyticsState();
 }
 
-class GetAnalyticsInitial extends GetAnalyticsState {
+final class GetAnalyticsInitial extends GetAnalyticsState {
   const GetAnalyticsInitial({this.dateRange = DateRange.last24Hours});
 
   final DateRange dateRange;
@@ -15,7 +15,7 @@ class GetAnalyticsInitial extends GetAnalyticsState {
   List<Object?> get props => [dateRange];
 }
 
-class GetAnalyticsLoading extends GetAnalyticsState {
+final class GetAnalyticsLoading extends GetAnalyticsState {
   const GetAnalyticsLoading({required this.dateRange});
 
   final DateRange dateRange;
@@ -24,7 +24,7 @@ class GetAnalyticsLoading extends GetAnalyticsState {
   List<Object?> get props => [dateRange];
 }
 
-class GetAnalyticsSuccess extends GetAnalyticsState {
+final class GetAnalyticsSuccess extends GetAnalyticsState {
   const GetAnalyticsSuccess({required this.analytics, required this.dateRange});
 
   final DeviceVitalsAnalyticsEntity analytics;
@@ -34,7 +34,7 @@ class GetAnalyticsSuccess extends GetAnalyticsState {
   List<Object?> get props => [analytics, dateRange];
 }
 
-class GetAnalyticsFailure extends GetAnalyticsState {
+final class GetAnalyticsFailure extends GetAnalyticsState {
   const GetAnalyticsFailure({required this.message, required this.dateRange});
 
   final String message;

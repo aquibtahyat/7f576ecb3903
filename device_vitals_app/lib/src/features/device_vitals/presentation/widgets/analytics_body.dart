@@ -22,7 +22,12 @@ class _AnalyticsBodyState extends State<AnalyticsBody> {
   @override
   void initState() {
     super.initState();
-    _getAnalytics();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _getAnalytics();
+      }
+    });
   }
 
   @override

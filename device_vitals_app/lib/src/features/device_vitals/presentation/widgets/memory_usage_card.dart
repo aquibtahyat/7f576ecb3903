@@ -30,7 +30,7 @@ class MemoryUsageCard extends StatelessWidget {
           return VitalsCard.failed(
             metricType: VitalMetricType.memory,
             title: 'Memory Usage',
-            icon: Icons.storage,
+            icon: Icons.memory_sharp,
             onFailRefresh: () {
               context.read<GetMemoryUsageCubit>().getMemoryUsage();
             },

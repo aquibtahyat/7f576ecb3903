@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 class AppElevatedButtonTheme {
   AppElevatedButtonTheme._();
 
-  static final ElevatedButtonThemeData lightElevatedButtonTheme =
+  static final ElevatedButtonThemeData elevatedButtonTheme =
       ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
+          fixedSize: Size(double.maxFinite, 60),
           elevation: 0,
           backgroundColor: AppColors.primaryLight,
           foregroundColor: AppColors.white,

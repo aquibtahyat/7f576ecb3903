@@ -9,21 +9,36 @@ class AutoLogTimerCubit extends Cubit<AutoLogTimerState> {
   AutoLogTimerCubit() : super(const AutoLogTimerStopped());
 
   Timer? _timer;
-  final _autoLogInterval = Duration(minutes: 10);
+  final _autoLogInterval = Duration(seconds: 60);
 
   void startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(_autoLogInterval, (_) {
-      emit(AutoLogTimerTrigger());
-      if (!isClosed) emit(const AutoLogTimerRunning());
+    int remainingSeconds = _autoLogInterval.inSeconds;
+    if (!isClosed) emit(AutoLogTimerRunning(seconds: remainingSeconds));
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!isClosed) {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+          if (!isClosed) emit(AutoLogTimerTrigger());
+          stopTimer();
+          return;
+        }
+        if (!isClosed) {
+          emit(
+            AutoLogTimerRunning(
+              seconds: remainingSeconds,
+              showSoonWarning: remainingSeconds == 5,
+            ),
+          );
+        }
+      }
     });
-    emit(const AutoLogTimerRunning());
   }
 
-  void stopTimer() {
+  void stopTimer({String? message}) {
     _timer?.cancel();
     _timer = null;
-    emit(const AutoLogTimerStopped());
+    if (!isClosed) emit(AutoLogTimerStopped(message: message));
   }
 
   @override

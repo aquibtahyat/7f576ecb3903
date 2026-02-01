@@ -5,20 +5,20 @@ sealed class GetBatteryLevelState extends Equatable {
   const GetBatteryLevelState();
 }
 
-class GetBatteryLevelInitial extends GetBatteryLevelState {
+final class GetBatteryLevelInitial extends GetBatteryLevelState {
   const GetBatteryLevelInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetBatteryLevelLoading extends GetBatteryLevelState {
+final class GetBatteryLevelLoading extends GetBatteryLevelState {
   const GetBatteryLevelLoading();
   @override
   List<Object?> get props => [];
 }
 
-class GetBatteryLevelSuccess extends GetBatteryLevelState {
+final class GetBatteryLevelSuccess extends GetBatteryLevelState {
   final BatteryLevelEntity batteryLevel;
   const GetBatteryLevelSuccess(this.batteryLevel);
 
@@ -26,7 +26,7 @@ class GetBatteryLevelSuccess extends GetBatteryLevelState {
   List<Object?> get props => [batteryLevel];
 }
 
-class GetBatteryLevelFailure extends GetBatteryLevelState {
+final class GetBatteryLevelFailure extends GetBatteryLevelState {
   final String message;
   final bool isLoadAll;
   const GetBatteryLevelFailure(this.message, {this.isLoadAll = false});

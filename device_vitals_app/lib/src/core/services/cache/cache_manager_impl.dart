@@ -19,7 +19,7 @@ class CacheManagerImpl extends CacheManager {
     if (!Hive.isBoxOpen(AppConstants.logBox) ||
         !Hive.isBoxOpen(AppConstants.deviceBox)) {
       await Hive.openBox<CachedDeviceVitalsRequestModel>(AppConstants.logBox);
-      await Hive.openBox<CachedUniqueIdModel>(AppConstants.deviceBox);
+      await Hive.openBox(AppConstants.deviceBox);
     }
   }
 
@@ -28,9 +28,9 @@ class CacheManagerImpl extends CacheManager {
     return Hive.box<CachedDeviceVitalsRequestModel>(AppConstants.logBox);
   }
 
-  Future<Box<CachedUniqueIdModel>> _getDeviceBox() async {
+  Future<Box> _getDeviceBox() async {
     await _initBox();
-    return Hive.box<CachedUniqueIdModel>(AppConstants.deviceBox);
+    return Hive.box(AppConstants.deviceBox);
   }
 
   @override
@@ -67,18 +67,31 @@ class CacheManagerImpl extends CacheManager {
   }
 
   @override
-  Future<String?> getUniqueId(CacheKey key) async {
+  Future<String?> getUniqueId() async {
     final box = await _getDeviceBox();
-    final id = box.get(key.name)?.uniqueId;
+    final id = box.get(CacheKey.uniqueId.name)?.uniqueId;
 
     return (id == null || id.isEmpty) ? null : id;
   }
 
   @override
-  Future<void> saveUniqueId(CacheKey key, String value) {
+  Future<void> saveUniqueId(String value) {
     final box = _getDeviceBox();
     return box.then(
-      (b) => b.put(key.name, CachedUniqueIdModel(uniqueId: value)),
+      (b) =>
+          b.put(CacheKey.uniqueId.name, CachedUniqueIdModel(uniqueId: value)),
     );
+  }
+
+  @override
+  Future<void> changeAutoLogPreference(bool value) {
+    final box = _getDeviceBox();
+    return box.then((b) => b.put(CacheKey.autoLog.name, value));
+  }
+
+  @override
+  Future<bool> getAutoLogPreference() {
+    final box = _getDeviceBox();
+    return box.then((b) => b.get(CacheKey.autoLog.name) ?? false);
   }
 }

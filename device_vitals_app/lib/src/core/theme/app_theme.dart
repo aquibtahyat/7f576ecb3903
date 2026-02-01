@@ -12,20 +12,20 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData lightTheme = ThemeData(
+  static ThemeData theme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Poppins',
     brightness: Brightness.light,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.screenBackground,
-    textTheme: AppTextTheme.lightTextTheme,
-    elevatedButtonTheme: AppElevatedButtonTheme.lightElevatedButtonTheme,
-    textButtonTheme: AppTextButtonTheme.lightTextButtonTheme,
-    appBarTheme: AppAppBarTheme.lightAppBarTheme,
-    inputDecorationTheme: AppInputDecorationTheme.lightInputDecorationTheme,
-    floatingActionButtonTheme: AppFABTheme.lightFABTheme,
-    snackBarTheme: AppSnackBarTheme.lightSnackBarTheme,
+    textTheme: AppTextTheme.textTheme,
+    elevatedButtonTheme: AppElevatedButtonTheme.elevatedButtonTheme,
+    textButtonTheme: AppTextButtonTheme.textButtonTheme,
+    appBarTheme: AppAppBarTheme.appBarTheme,
+    inputDecorationTheme: AppInputDecorationTheme.inputDecorationTheme,
+    floatingActionButtonTheme: AppFABTheme.fabTheme,
+    snackBarTheme: AppSnackBarTheme.snackBarTheme,
     bottomNavigationBarTheme:
-        AppBottomNavigationBarTheme.lightBottomNavigationBarTheme,
+        AppBottomNavigationBarTheme.bottomNavigationBarTheme,
   );
 }

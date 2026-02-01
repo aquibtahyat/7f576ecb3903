@@ -28,11 +28,9 @@ class _SplashPageState extends State<SplashPage> {
       body: Container(
         color: AppColors.surfaceBackground,
         child: Center(
-          child: SizedBox(
-            child: Image.asset(
-              'assets/images/device_vitals_splash.png',
-              fit: BoxFit.contain,
-            ),
+          child: Image.asset(
+            'assets/images/device_vitals_app.png',
+            fit: BoxFit.contain,
           ),
         ),
       ),

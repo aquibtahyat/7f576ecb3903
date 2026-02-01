@@ -18,17 +18,17 @@ class DeviceInfoImpl implements DeviceInfo {
 
   @override
   Future<String> getUniqueId() async {
-    final cached = await _cacheManager.getUniqueId(CacheKey.uniqueId);
+    final cached = await _cacheManager.getUniqueId();
     if (cached != null && cached.isNotEmpty) return cached;
 
     final platformId = await _getPlatformId();
     if (platformId != null && platformId.isNotEmpty) {
-      await _cacheManager.saveUniqueId(CacheKey.uniqueId, platformId);
+      await _cacheManager.saveUniqueId(platformId);
       return platformId;
     }
 
     final generated = const Uuid().v4();
-    await _cacheManager.saveUniqueId(CacheKey.uniqueId, generated);
+    await _cacheManager.saveUniqueId(generated);
     return generated;
   }
 

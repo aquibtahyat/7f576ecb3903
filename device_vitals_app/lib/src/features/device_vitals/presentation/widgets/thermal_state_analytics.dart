@@ -45,13 +45,15 @@ class ThermalStateAnalytics extends StatelessWidget {
             ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 300, maxHeight: 500),
               child: SizedBox(
-                height: 400,
                 child: SfCartesianChart(
                   backgroundColor: AppColors.white,
                   plotAreaBackgroundColor: AppColors.screenBackground,
                   plotAreaBorderWidth: 0,
                   primaryXAxis: DateTimeAxis(
-                    dateFormat: DateFormat('HH:mma\nMMM dd'),
+                    dateFormat: DateFormat('hh:mm a\nMMM dd'),
+                    maximumLabels: 8,
+                    desiredIntervals: 7,
+                    labelRotation: -45,
                     intervalType: DateTimeIntervalType.auto,
                     majorGridLines: MajorGridLines(width: 0),
                     minorGridLines: MinorGridLines(width: 0),
@@ -67,13 +69,22 @@ class ThermalStateAnalytics extends StatelessWidget {
                     axisLine: AxisLine(color: AppColors.borderMedium, width: 1),
                   ),
                   series: [
-                    StepLineSeries<DeviceVitalsEntity, DateTime>(
+                    StepAreaSeries<DeviceVitalsEntity, DateTime>(
                       dataSource: analytics.series,
                       xValueMapper: (DeviceVitalsEntity series, _) =>
                           series.timestamp,
                       yValueMapper: (DeviceVitalsEntity series, _) =>
                           series.thermalValue,
-                      color: AppColors.primary,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.primary.withAlpha(80),
+                          AppColors.primary.withAlpha(20),
+                        ],
+                      ),
+                      borderColor: AppColors.primary,
+                      borderWidth: 2,
                     ),
                   ],
                   tooltipBehavior: TooltipBehavior(

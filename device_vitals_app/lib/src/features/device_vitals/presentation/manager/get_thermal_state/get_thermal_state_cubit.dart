@@ -7,7 +7,7 @@ import 'package:injectable/injectable.dart';
 @injectable
 class GetThermalStateCubit extends Cubit<GetThermalStateState> {
   GetThermalStateCubit({required this.useCase})
-    : super(GetThermalStateInitial());
+    : super(const GetThermalStateInitial());
 
   final GetThermalState useCase;
 

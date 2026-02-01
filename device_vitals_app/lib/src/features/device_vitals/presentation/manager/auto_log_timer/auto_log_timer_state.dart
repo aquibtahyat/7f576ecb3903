@@ -2,17 +2,25 @@ import 'package:equatable/equatable.dart';
 
 sealed class AutoLogTimerState extends Equatable {
   const AutoLogTimerState();
-
-  @override
-  List<Object?> get props => [];
 }
 
 final class AutoLogTimerStopped extends AutoLogTimerState {
-  const AutoLogTimerStopped();
+  final String? message;
+  const AutoLogTimerStopped({this.message});
+
+  @override
+  List<Object?> get props => [message];
 }
 
 final class AutoLogTimerRunning extends AutoLogTimerState {
-  const AutoLogTimerRunning();
+  final int seconds;
+  final bool showSoonWarning;
+
+  const AutoLogTimerRunning(
+      {required this.seconds, this.showSoonWarning = false});
+
+  @override
+  List<Object?> get props => [seconds, showSoonWarning];
 }
 
 final class AutoLogTimerTrigger extends AutoLogTimerState {

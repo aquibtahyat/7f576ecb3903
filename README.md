@@ -17,6 +17,7 @@ Device Vitals Monitor consists of:
 - ✅ Data validation: thermal 0–3, battery/memory 0–100, ISO timestamp, future timestamps rejected
 - ✅ Analytics screen with rolling averages, min/max, and charts (GET /api/vitals/analytics/:id)
 - ✅ History screen: latest 100 entries from GET /api/vitals/:id
+- ✅ User-configurable auto-log (foreground) with persisted preference (Hive); foreground timer logs vitals at interval when enabled
 - ✅ Background logging every 15 minutes (bonus)
 - ✅ Offline support with local caching (Hive) (bonus)
 - ✅ Comprehensive error handling (backend unreachable, PlatformException, timeouts)

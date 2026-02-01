@@ -20,4 +20,7 @@ abstract interface class DeviceVitalsRepository {
   Future<Result<DeviceVitalsAnalyticsEntity>> getDeviceVitalsAnalytics({
     required DateRange dateRange,
   });
+
+  Future<Result<bool>> getAutoLogPreference();
+  Future<Result<bool>> changeAutoLogPreference({required bool value});
 }

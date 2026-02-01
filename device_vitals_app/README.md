@@ -4,6 +4,7 @@ A Flutter mobile application that monitors device vitals (thermal state, battery
 
 ## 📋 Table of Contents
 
+- [App Screenshots](#-app-screenshots)
 - [Overview](#overview)
 - [Features](#features)
 - [Architecture](#architecture)
@@ -16,6 +17,21 @@ A Flutter mobile application that monitors device vitals (thermal state, battery
 - [State Management](#state-management)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
+
+## 📱 App Screenshots
+
+<p align="center">
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427295-0657ae87-699d-40a0-8b05-10e96b87f5fe.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMxNjAsIm5iZiI6MTc2OTk1Mjg2MCwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3Mjk1LTA2NTdhZTg3LTY5OWQtNDBhMC04YjA1LTEwZTk2Yjg3ZjVmZS5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzM0MjBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zMjFkOWExNzY0M2FlYThjY2M5Yjg4MjQ5Y2RkMGIxOTM1ZmRjN2FmYWMxOWE0MGEzZTA1ZWVhMGQyMDQzNGE3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.AHz2ohz1lkC6M8uJWYhEeEQ7UJe6RCsQO6lzL6SHqDc" width="220" alt="Screenshot 1" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427347-68f331a6-fffa-42a7-89c8-ad5b48655c1d.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMyMzksIm5iZiI6MTc2OTk1MjkzOSwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3MzQ3LTY4ZjMzMWE2LWZmZmEtNDJhNy04OWM4LWFkNWI0ODY1NWMxZC5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzM1MzlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0xYmFlYTg3MTZmNTg1ZTY1ZGM0NmYwYjZiMTYyMzI3YjkyY2U0MGY5Y2VmZjRhN2I4N2MzZjYxOTA0NTdlYmNhJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.t4CSmmTTl6wCimWYRv_h4QgESiAwR3YHpWm9qf_Ryto" width="220" alt="Screenshot 2" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427371-28b6f0c4-9f74-47d6-99ab-ed402b440d6c.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMyNTcsIm5iZiI6MTc2OTk1Mjk1NywicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3MzcxLTI4YjZmMGM0LTlmNzQtNDdkNi05OWFiLWVkNDAyYjQ0MGQ2Yy5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzM1NTdaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05ZjFlYTE3NjFkZTNhOGVlZDlhMzU1ODYxZmJmM2FhZmJiYzU0NTkzNTc1MjUxMjVjYWViYzdmNjQ4M2UyMjcyJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.4RE5r1gRgiuhXMp6maNSF-sET5facQmcoI7n62EVrZY" width="220" alt="Screenshot 3" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427427-8c748bc0-27a6-4785-bbf8-ec05d89a3a48.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMyNzUsIm5iZiI6MTc2OTk1Mjk3NSwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3NDI3LThjNzQ4YmMwLTI3YTYtNDc4NS1iYmY4LWVjMDVkODlhM2E0OC5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzM2MTVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yMjkxYjI3MWE0ZmVjNjQ4NGM1YmYwMmZkMDQ0NzkwZmZhMGM5MTJiNTc4NjQyYjRmMDA1ZTlkNDQ2OTVkOTk3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.0eSZiHp1gQwCEKHyhs9LUyG-wEo65MChrpqvOdc_Nl0" width="220" alt="Screenshot 4" />
+</p>
+<p align="center">
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427465-a3737c5a-7308-4ca4-94ad-21aedd6dc66a.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMyOTMsIm5iZiI6MTc2OTk1Mjk5MywicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3NDY1LWEzNzM3YzVhLTczMDgtNGNhNC05NGFkLTIxYWVkZDZkYzY2YS5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzM2MzNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01MjA5YWZlMzZjMDU5NDc5MTI4MWNkNDQ4MDQzYWNiYzA3ODc1NGE0YmU2MjNhNjYxYjQ1ZTA2NjFlYWU4MmZlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.p9DlCENsLExRBgQaq8zwJ2SJOgjHMXVuhBNNgZpXjDk" width="220" alt="Screenshot 5" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427476-b3482168-c497-4fd3-afba-158ef5728963.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTMwMzYsIm5iZiI6MTc2OTk1MjczNiwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3NDc2LWIzNDgyMTY4LWM0OTctNGZkMy1hZmJhLTE1OGVmNTcyODk2My5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzMyMTZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05NjRiY2Q3ZWZiMDQ5ZWFmNzZhMzcwMmM3NjY0MDQ2YzQyMTAxMjRhOWM0NzlhZWYyNTFhOWQ0Nzc4NGU4YjBiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.INKAZeAnzd7i3X4BS6OFxfYJGG2Tw2fW1xTW7UNeegs" width="220" alt="Screenshot 6" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427529-a3bcac43-dbac-44bd-ac70-c15769ce95d7.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTM1NzIsIm5iZiI6MTc2OTk1MzI3MiwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3NTI5LWEzYmNhYzQzLWRiYWMtNDRiZC1hYzcwLWMxNTc2OWNlOTVkNy5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzQxMTJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hY2Q4Mjk1OTI0YzViNjdiYzA0YjU1MmI4ZGVkYTcwZmVkN2U2ZDczNGYwMzA4NTIzMWE2NTgzM2Q5NGZmNWUyJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.gPOcz3_dAgj4D1cArX5Qdb5SIUC_Hdpt6RzUgHA8XfU" width="220" alt="Screenshot 7" />
+  <img src="https://private-user-images.githubusercontent.com/123585282/543427545-13f27cbd-a576-4a04-a198-e3def8d30195.jpg?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3Njk5NTM2NDUsIm5iZiI6MTc2OTk1MzM0NSwicGF0aCI6Ii8xMjM1ODUyODIvNTQzNDI3NTQ1LTEzZjI3Y2JkLWE1NzYtNGEwNC1hMTk4LWUzZGVmOGQzMDE5NS5qcGc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwMjAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDIwMVQxMzQyMjVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iZGM0OWI2YjAxMDgyN2QwNTMxZmQ5MTAxNjg3NzJjOWI2NTkwM2FjNGQ0YzEwMmE2NjA5NDQ2OWY1NzFhNGY5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.5PCkf5mtuFKV0G45ky1H09Gb6SbYs62uREBcvMo9fQA" width="220" alt="Screenshot 8" />
+</p>
 
 ## 🎯 Overview
 
@@ -40,6 +56,8 @@ Device Vitals is a Flutter application that:
   - Current vitals with visual indicators
   - Pull-to-refresh functionality
   - Manual logging button with feedback
+  - Auto-log switch: user can enable/disable foreground auto-log; preference is persisted (Hive) and survives app restarts
+  - When auto-log is on, vitals are logged automatically at a fixed interval while the app is in foreground
 
 - ✅ **History Screen**
   - Fetches historical logs from GET /api/vitals (latest 100 entries per device)
@@ -243,7 +261,7 @@ flutter build ios --release
 - `THERMAL_STATUS_NONE` → 0
 - `THERMAL_STATUS_LIGHT` → 1
 - `THERMAL_STATUS_MODERATE` → 2
-- `THERMAL_STATUS_SEVERE` → 3
+- `THERMAL_STATUS_SEVERE`, `THERMAL_STATUS_CRITICAL`, `THERMAL_STATUS_EMERGENCY`, `THERMAL_STATUS_SHUTDOWN` → 3
 
 ### iOS ✅
 
@@ -294,6 +312,8 @@ The app uses **BLoC (Business Logic Component)** pattern with Cubits:
 - `LogDeviceVitalsCubit` - Handles logging to API
 - `GetHistoryCubit` - Manages history data
 - `GetAnalyticsCubit` - Manages analytics data
+- `AutoLogPreferenceCubit` - Manages user preference for auto-log (get/set); persisted via repository (Hive)
+- `AutoLogTimerCubit` - Foreground timer that triggers auto-log at interval when auto-log is enabled
 
 ### State Flow
 
@@ -382,9 +402,9 @@ await Workmanager().registerPeriodicTask(
 
 The app uses **Hive** for local caching:
 
-- **Storage**: Device vitals logs cached locally
+- **Storage**: Device vitals logs cached locally; user preference for auto-log (on/off) and device unique ID are persisted in Hive via `CacheManager`
 - **Sync**: Automatic sync when backend is available
-- **Box Name**: `logBox`
+- **Boxes**: Two Hive boxes—`logBox` (cached vitals logs) and `deviceBox` (unique ID, auto-log preference)
 
 **Cache Flow**:
 1. Log created → Stored in Hive

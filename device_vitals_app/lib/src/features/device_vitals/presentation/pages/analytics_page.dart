@@ -11,7 +11,7 @@ class AnalyticsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => injector.get<GetAnalyticsCubit>(),
-      child: AnalyticsBody(),
+      child: const AnalyticsBody(),
     );
   }
 }

@@ -21,6 +21,10 @@ import '../../features/device_vitals/data/repositories/device_vitals_repository_
     as _i757;
 import '../../features/device_vitals/domain/repositories/device_vitals_repository.dart'
     as _i687;
+import '../../features/device_vitals/domain/use_cases/change_auto_log_preference.dart'
+    as _i884;
+import '../../features/device_vitals/domain/use_cases/get_auto_log_preference.dart'
+    as _i627;
 import '../../features/device_vitals/domain/use_cases/get_battery_level.dart'
     as _i125;
 import '../../features/device_vitals/domain/use_cases/get_device_vitals_analytics.dart'
@@ -33,8 +37,10 @@ import '../../features/device_vitals/domain/use_cases/get_thermal_state.dart'
     as _i643;
 import '../../features/device_vitals/domain/use_cases/log_device_vitals.dart'
     as _i6;
+import '../../features/device_vitals/presentation/manager/auto_log_preference/auto_log_preference_cubit.dart'
+    as _i476;
 import '../../features/device_vitals/presentation/manager/auto_log_timer/auto_log_timer_cubit.dart'
-    as _i901;
+    as _i1014;
 import '../../features/device_vitals/presentation/manager/get_analytics/get_analytics_cubit.dart'
     as _i963;
 import '../../features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart'
@@ -61,6 +67,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final networkModule = _$NetworkModule();
+    gh.factory<_i1014.AutoLogTimerCubit>(() => _i1014.AutoLogTimerCubit());
     gh.lazySingleton<_i1062.PlatformDataSource>(
       () => _i1062.PlatformDataSource(),
     );
@@ -84,6 +91,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i288.DeviceInfo>(),
         gh<_i45.CacheManager>(),
       ),
+    );
+    gh.factory<_i884.ChangeAutoLogPreference>(
+      () => _i884.ChangeAutoLogPreference(gh<_i687.DeviceVitalsRepository>()),
+    );
+    gh.factory<_i627.GetAutoLogPreference>(
+      () => _i627.GetAutoLogPreference(gh<_i687.DeviceVitalsRepository>()),
     );
     gh.factory<_i125.GetBatteryLevel>(
       () => _i125.GetBatteryLevel(gh<_i687.DeviceVitalsRepository>()),
@@ -109,13 +122,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i312.GetHistoryCubit>(
       () => _i312.GetHistoryCubit(useCase: gh<_i710.GetDeviceVitalsHistory>()),
     );
+    gh.factory<_i476.AutoLogPreferenceCubit>(
+      () => _i476.AutoLogPreferenceCubit(
+        getAutoLogPreferenceUseCase: gh<_i627.GetAutoLogPreference>(),
+        changeAutoLogPreferenceUseCase: gh<_i884.ChangeAutoLogPreference>(),
+      ),
+    );
     gh.factory<_i966.GetThermalStateCubit>(
       () => _i966.GetThermalStateCubit(useCase: gh<_i643.GetThermalState>()),
     );
     gh.factory<_i934.LogDeviceVitalsCubit>(
       () => _i934.LogDeviceVitalsCubit(gh<_i6.LogDeviceVitals>()),
     );
-    gh.factory<_i901.AutoLogTimerCubit>(() => _i901.AutoLogTimerCubit());
     gh.factory<_i101.GetMemoryUsageCubit>(
       () => _i101.GetMemoryUsageCubit(useCase: gh<_i186.GetMemoryUsage>()),
     );

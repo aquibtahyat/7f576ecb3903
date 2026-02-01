@@ -1,7 +1,8 @@
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
 import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_request_entity.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_preference/auto_log_preference_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_preference/auto_log_preference_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_timer/auto_log_timer_cubit.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_timer/auto_log_timer_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_memory_usage/get_memory_usage_cubit.dart';
@@ -9,6 +10,8 @@ import 'package:device_vitals_app/src/features/device_vitals/presentation/manage
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_thermal_state/get_thermal_state_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/log_device_vitals/log_device_vitals_cubit.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/log_device_vitals/log_device_vitals_state.dart';
+import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/auto_log_row_widget.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/battery_level_card.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/log_vitals_button.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/widgets/memory_usage_card.dart';
@@ -28,10 +31,11 @@ class _DashboardBodyState extends State<DashboardBody>
   @override
   void initState() {
     super.initState();
-    _getDashboardData();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<AutoLogTimerCubit>().startTimer();
+      if (mounted) {
+        _getDashboardData();
+      }
     });
   }
 
@@ -40,14 +44,8 @@ class _DashboardBodyState extends State<DashboardBody>
     super.didChangeAppLifecycleState(state);
     if (!mounted) return;
 
-    final timerCubit = context.read<AutoLogTimerCubit>();
     if (state == AppLifecycleState.resumed) {
       _getDashboardData();
-      timerCubit.startTimer();
-    } else if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) {
-      timerCubit.stopTimer();
     }
   }
 
@@ -55,17 +53,6 @@ class _DashboardBodyState extends State<DashboardBody>
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<AutoLogTimerCubit, AutoLogTimerState>(
-          listenWhen: (previous, current) => current is AutoLogTimerTrigger,
-          listener: (context, state) {
-            if (state is AutoLogTimerTrigger) {
-              context.showSnackBar('Auto logging vitals...');
-              _getDashboardData().then((_) {
-                if (mounted) _onTapLogStatus();
-              });
-            }
-          },
-        ),
         BlocListener<GetThermalStateCubit, GetThermalStateState>(
           listenWhen: (previous, current) => previous != current,
           listener: (context, state) {
@@ -102,6 +89,27 @@ class _DashboardBodyState extends State<DashboardBody>
             }
           },
         ),
+        BlocListener<LogDeviceVitalsCubit, LogDeviceVitalsState>(
+          listenWhen: (previous, current) => previous != current,
+          listener: (context, state) {
+            final prefState = context.read<AutoLogPreferenceCubit>().state;
+            final timerCubit = context.read<AutoLogTimerCubit>();
+
+            if (state is LogDeviceVitalsFailure) {
+              context.showSnackBar(state.message);
+
+              if (prefState is AutoLogPreferenceSuccess &&
+                  prefState.isEnabled) {
+                timerCubit.startTimer();
+              }
+            } else if (state is LogDeviceVitalsSuccess) {
+              context.showSnackBar('Status logged successfully');
+              if (state.isAutoLog) {
+                timerCubit.startTimer();
+              }
+            }
+          },
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -118,13 +126,22 @@ class _DashboardBodyState extends State<DashboardBody>
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    ThermalStateCard(),
+                    const ThermalStateCard(),
                     const SizedBox(height: 16),
-                    BatteryLevelCard(),
+                    const BatteryLevelCard(),
                     const SizedBox(height: 16),
-                    MemoryUsageCard(),
-                    const SizedBox(height: 24),
-                    LogVitalsButton(onLogPressed: _onTapLogStatus),
+                    const MemoryUsageCard(),
+                    const SizedBox(height: 16),
+                    LogVitalsButton(onLogPressed: _onTapLogVitals),
+                    const SizedBox(height: 16),
+                    AutoLogRowWidget(
+                      onTapAutoLog: () {
+                        _getDashboardData().then((_) {
+                          if (!mounted) return;
+                          _onTapLogVitals(isAutoLog: true);
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -166,7 +183,7 @@ class _DashboardBodyState extends State<DashboardBody>
     }
   }
 
-  void _onTapLogStatus() {
+  void _onTapLogVitals({bool isAutoLog = false}) {
     final tState = context.read<GetThermalStateCubit>().state;
     final bState = context.read<GetBatteryLevelCubit>().state;
     final mState = context.read<GetMemoryUsageCubit>().state;
@@ -194,13 +211,13 @@ class _DashboardBodyState extends State<DashboardBody>
         batteryLevel: battery,
         memoryUsage: memory,
       ),
+      isAutoLog: isAutoLog,
     );
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    context.read<AutoLogTimerCubit>().stopTimer();
     super.dispose();
   }
 }

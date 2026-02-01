@@ -7,7 +7,7 @@ import 'package:injectable/injectable.dart';
 @injectable
 class GetBatteryLevelCubit extends Cubit<GetBatteryLevelState> {
   GetBatteryLevelCubit({required this.useCase})
-    : super(GetBatteryLevelInitial());
+    : super(const GetBatteryLevelInitial());
 
   final GetBatteryLevel useCase;
 

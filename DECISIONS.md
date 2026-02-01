@@ -6,14 +6,15 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 - [Ambiguity 1: Analytics Endpoint Response Format](#ambiguity-1-analytics-endpoint-response-format)
 - [Ambiguity 2: Device ID and Device-Specific Data](#ambiguity-2-device-id-and-device-specific-data)
-- [Ambiguity 3: Offline Support Strategy](#ambiguity-3-offline-support-strategy)
-- [Ambiguity 4: Background Logging Failure Handling](#ambiguity-4-background-logging-failure-handling)
-- [Ambiguity 5: How to Present History and Analytics](#ambiguity-5-how-to-present-history-and-analytics)
-- [Ambiguity 6: Foreground Auto-Refresh and Auto-Log](#ambiguity-6-foreground-auto-refresh-and-auto-log)
-- [Ambiguity 7: Sensor Failure Handling](#ambiguity-7-sensor-failure-handling)
-- [Ambiguity 8: Database/Storage Technology Choice](#ambiguity-8-databasestorage-technology-choice)
-- [Ambiguity 9: Date Range Options for Analytics](#ambiguity-9-date-range-options-for-analytics)
-- [Ambiguity 10: Backend Deployment](#ambiguity-10-backend-deployment)
+- [Ambiguity 3: Thermal State Mapping (Android vs iOS)](#ambiguity-3-thermal-state-mapping-android-vs-ios)
+- [Ambiguity 4: Offline Support Strategy](#ambiguity-4-offline-support-strategy)
+- [Ambiguity 5: Background Logging Failure Handling](#ambiguity-5-background-logging-failure-handling)
+- [Ambiguity 6: How to Present History and Analytics](#ambiguity-6-how-to-present-history-and-analytics)
+- [Ambiguity 7: Foreground Auto-Refresh and Auto-Log](#ambiguity-7-foreground-auto-refresh-and-auto-log)
+- [Ambiguity 8: Sensor Failure Handling](#ambiguity-8-sensor-failure-handling)
+- [Ambiguity 9: Database/Storage Technology Choice](#ambiguity-9-databasestorage-technology-choice)
+- [Ambiguity 10: Date Range Options for Analytics](#ambiguity-10-date-range-options-for-analytics)
+- [Ambiguity 11: Backend Deployment](#ambiguity-11-backend-deployment)
 - [Questions to Ask the Project Manager](#questions-to-ask-the-project-manager)
 - [Requirements Compliance Notes](#requirements-compliance-notes)
 - [Summary](#summary)
@@ -54,7 +55,24 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 3: Offline Support Strategy
+## Ambiguity 3: Thermal State Mapping (Android vs iOS)
+
+**Question**: Android exposes more thermal states (e.g. six or more: NONE, LIGHT, MODERATE, SEVERE, CRITICAL, EMERGENCY, etc.) and iOS exposes fewer (e.g. four: nominal, fair, serious, critical). How should the app and API represent thermal state so that data is consistent across platforms and transparent to users?
+
+**Options Considered**:
+- Option A: Use platform-specific values and labels; API accepts variable ranges (inconsistent across devices, harder analytics)
+- Option B: Map both platforms to a single numeric range (e.g. 0–3) in the API but show raw platform labels in the UI (consistent API but confusing if labels differ per device)
+- Option C: Map both platforms to a common 0–3 scale and use the same user-friendly labels everywhere (e.g. 0 = Nominal, 1 = Fair, 2 = Serious, 3 = Critical); display only 0–3 and these labels in the app
+
+**Decision**: I chose Option C because it gives a single contract for the API (thermal_value 0–3); analytics and history are comparable across Android and iOS; and users see a strict 0–3 value with consistent, user-friendly labels (Nominal, Fair, Serious, Critical), which ensures both transparency (users always know the exact state) and consistency across all device types.
+
+**Trade-offs**: Some platform granularity is lost (e.g. Android’s CRITICAL, EMERGENCY, SHUTDOWN all map to 3). Acceptable because the API and UI stay simple and comparable; “3” consistently means the most severe thermal state.
+
+**Assumptions**: Users care more about a clear, comparable 0–3 scale and readable labels than about platform-specific state names; backend validation (thermal 0–3) and UI (labels from the same enum) stay aligned.
+
+---
+
+## Ambiguity 4: Offline Support Strategy
 
 **Question**: Should the app support offline logging? If the backend is unreachable, should logs be queued locally or discarded?
 
@@ -72,7 +90,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 4: Background Logging Failure Handling
+## Ambiguity 5: Background Logging Failure Handling
 
 **Question**: When background logging fails, should we retry immediately or wait for the next interval? What happens to the failed log?
 
@@ -90,7 +108,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 5: How to Present History and Analytics
+## Ambiguity 6: How to Present History and Analytics
 
 **Question**: How should the app present historical logs (GET /api/vitals) and analytics (GET /api/vitals/analytics)? One screen with tabs, two screens, or a single combined view?
 
@@ -108,24 +126,24 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 6: Foreground Auto-Refresh and Auto-Log
+## Ambiguity 7: Foreground Auto-Refresh and Auto-Log
 
 **Question**: Should the app auto-refresh dashboard data and auto-log vitals while in foreground? Should this be user-configurable?
 
 **Options Considered**:
 - Option A: No foreground auto-refresh or auto-log; user manually refreshes and taps "Log Status"
 - Option B: Foreground timer that auto-refreshes and logs at an interval; no user control
-- Option C: Foreground timer for auto-refresh and auto-log; scope for future user choice (e.g. auto-log switch)
+- Option C: Foreground timer for auto-refresh and auto-log; user-configurable via an auto-log switch with persisted preference
 
-**Decision**: I chose Option C because it keeps the dashboard current and builds history without requiring the user to tap "Log Status" every time; the timer runs only in foreground so it doesn't overlap with background WorkManager; and a user-configurable switch is a natural future step.
+**Decision**: I chose Option C because it keeps the dashboard current and builds history without requiring the user to tap "Log Status" every time; the timer runs only in foreground so it doesn't overlap with background WorkManager; and the user can enable or disable auto-log via a switch with the choice persisted (Hive).
 
-**Trade-offs**: Fixed interval (e.g. 10 min) for now; no UI for toggling auto-log yet. Documented as scope for future enhancement.
+**Trade-offs**: Fixed interval (e.g. 60 seconds when auto-log is enabled). The auto-log switch and user preference are implemented: preference is stored locally (Hive) and the timer runs only when the user has enabled auto-log.
 
-**Assumptions**: Users benefit from updated data and auto-log while the app is open; some users may prefer to disable auto-log later (switch would support that).
+**Assumptions**: Users benefit from updated data and auto-log while the app is open; users can disable auto-log via the switch and their preference is retained across app restarts.
 
 ---
 
-## Ambiguity 7: Sensor Failure Handling
+## Ambiguity 8: Sensor Failure Handling
 
 **Question**: What happens when a sensor temporarily fails or returns unavailable data? Should the app fail completely, return default values, or require all sensors to log?
 
@@ -143,7 +161,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 8: Database/Storage Technology Choice
+## Ambiguity 9: Database/Storage Technology Choice
 
 **Question**: Which storage solution should be used for persistence? SQLite, JSON file, embedded DB, or something else?
 
@@ -161,7 +179,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 9: Date Range Options for Analytics
+## Ambiguity 10: Date Range Options for Analytics
 
 **Question**: What date range options should be available for analytics? Predefined only or custom picker?
 
@@ -179,7 +197,7 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 
 ---
 
-## Ambiguity 10: Backend Deployment
+## Ambiguity 11: Backend Deployment
 
 **Question**: The requirement said nothing about deployment. Should the backend be run only locally, or should it be deployed so the app can use a live API?
 
@@ -207,6 +225,11 @@ This document outlines: (1) each ambiguity with Question, Options Considered, De
 - Should device IDs be anonymized or hashed for privacy?
 - Do we need authentication/authorization so users only see their own device(s)?
 - Should users be able to delete their historical data?
+
+**Thermal state mapping**
+- Is the 0–3 scale and current label set (Nominal, Fair, Serious, Critical) sufficient for all use cases?
+- Do we need to expose platform-specific thermal states anywhere (e.g. for debugging)?
+- Should we document the Android/iOS → 0–3 mapping in user-facing help?
 
 **Offline**
 - How long can the app be offline before data loss becomes unacceptable?

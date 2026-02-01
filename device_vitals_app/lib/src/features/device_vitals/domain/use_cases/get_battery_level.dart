@@ -5,7 +5,8 @@ import 'package:device_vitals_app/src/features/device_vitals/domain/repositories
 import 'package:injectable/injectable.dart';
 
 @injectable
-class GetBatteryLevel implements UseCase<Result<BatteryLevelEntity>, NoParams> {
+final class GetBatteryLevel
+    implements UseCase<Result<BatteryLevelEntity>, NoParams> {
   final DeviceVitalsRepository _repository;
 
   GetBatteryLevel(this._repository);

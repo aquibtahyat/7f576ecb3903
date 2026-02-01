@@ -8,15 +8,18 @@ import 'package:injectable/injectable.dart';
 class LogDeviceVitalsCubit extends Cubit<LogDeviceVitalsState> {
   final LogDeviceVitals useCase;
 
-  LogDeviceVitalsCubit(this.useCase) : super(LogDeviceVitalsInitial());
+  LogDeviceVitalsCubit(this.useCase) : super(const LogDeviceVitalsInitial());
 
-  Future<void> logDeviceVitals(DeviceVitalsRequestEntity request) async {
+  Future<void> logDeviceVitals(
+    DeviceVitalsRequestEntity request, {
+    bool isAutoLog = false,
+  }) async {
     emit(const LogDeviceVitalsLoading());
 
     final result = await useCase(request);
 
     result.when(
-      success: (_) => emit(const LogDeviceVitalsSuccess()),
+      success: (_) => emit(LogDeviceVitalsSuccess(isAutoLog: isAutoLog)),
       failure: (message) => emit(LogDeviceVitalsFailure(message)),
     );
   }

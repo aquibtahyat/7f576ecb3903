@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class AppBottomNavigationBarTheme {
   AppBottomNavigationBarTheme._();
 
-  static final BottomNavigationBarThemeData lightBottomNavigationBarTheme =
+  static final BottomNavigationBarThemeData bottomNavigationBarTheme =
       BottomNavigationBarThemeData(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -19,11 +19,11 @@ class AppBottomNavigationBarTheme {
           color: AppColors.white.withValues(alpha: 0.65),
           size: 24,
         ),
-        selectedLabelStyle: AppTextTheme.lightTextTheme.labelSmall?.copyWith(
+        selectedLabelStyle: AppTextTheme.textTheme.labelSmall?.copyWith(
           color: AppColors.white,
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: AppTextTheme.lightTextTheme.labelSmall?.copyWith(
+        unselectedLabelStyle: AppTextTheme.textTheme.labelSmall?.copyWith(
           color: AppColors.white.withValues(alpha: 0.65),
           fontWeight: FontWeight.w500,
         ),

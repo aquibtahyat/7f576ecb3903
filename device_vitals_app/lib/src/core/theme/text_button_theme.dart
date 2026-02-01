@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class AppTextButtonTheme {
   AppTextButtonTheme._();
 
-  static final TextButtonThemeData lightTextButtonTheme = TextButtonThemeData(
+  static final TextButtonThemeData textButtonTheme = TextButtonThemeData(
     style: TextButton.styleFrom(
       foregroundColor: AppColors.primary,
       disabledForegroundColor: AppColors.textTertiary,
-      textStyle: AppTextTheme.lightTextTheme.bodyMedium?.copyWith(
+      textStyle: AppTextTheme.textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w600,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

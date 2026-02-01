@@ -171,6 +171,85 @@ void main() {
       );
     });
 
+    group('auto log preference', () {
+      test('getAutoLogPreference returns Success(true) when cache returns true',
+          () async {
+        when(() => cacheManager.getAutoLogPreference())
+            .thenAnswer((_) async => true);
+
+        final result = await repo.getAutoLogPreference();
+
+        expect(result, isA<Success<bool>>());
+        expect(result.when(success: (v) => v, failure: (_) => null), true);
+        verify(() => cacheManager.getAutoLogPreference()).called(1);
+      });
+
+      test('getAutoLogPreference returns Success(false) when cache returns false',
+          () async {
+        when(() => cacheManager.getAutoLogPreference())
+            .thenAnswer((_) async => false);
+
+        final result = await repo.getAutoLogPreference();
+
+        expect(result, isA<Success<bool>>());
+        expect(result.when(success: (v) => v, failure: (_) => null), false);
+        verify(() => cacheManager.getAutoLogPreference()).called(1);
+      });
+
+      test('getAutoLogPreference returns Failure when cache throws', () async {
+        when(() => cacheManager.getAutoLogPreference())
+            .thenThrow(Exception('Cache read failed'));
+
+        final result = await repo.getAutoLogPreference();
+
+        expect(result, isA<Failure>());
+        expect(
+          result.when(success: (_) => null, failure: (m) => m),
+          'Something went wrong. Please try again.',
+        );
+      });
+
+      test(
+          'changeAutoLogPreference returns Success(true) and calls cache with true',
+          () async {
+        when(() => cacheManager.changeAutoLogPreference(true))
+            .thenAnswer((_) async => {});
+
+        final result = await repo.changeAutoLogPreference(value: true);
+
+        expect(result, isA<Success<bool>>());
+        expect(result.when(success: (v) => v, failure: (_) => null), true);
+        verify(() => cacheManager.changeAutoLogPreference(true)).called(1);
+      });
+
+      test(
+          'changeAutoLogPreference returns Success(false) and calls cache with false',
+          () async {
+        when(() => cacheManager.changeAutoLogPreference(false))
+            .thenAnswer((_) async => {});
+
+        final result = await repo.changeAutoLogPreference(value: false);
+
+        expect(result, isA<Success<bool>>());
+        expect(result.when(success: (v) => v, failure: (_) => null), false);
+        verify(() => cacheManager.changeAutoLogPreference(false)).called(1);
+      });
+
+      test('changeAutoLogPreference returns Failure when cache throws',
+          () async {
+        when(() => cacheManager.changeAutoLogPreference(true))
+            .thenThrow(Exception('Cache write failed'));
+
+        final result = await repo.changeAutoLogPreference(value: true);
+
+        expect(result, isA<Failure>());
+        expect(
+          result.when(success: (_) => null, failure: (m) => m),
+          'Something went wrong. Please try again.',
+        );
+      });
+    });
+
     group('cache', () {
       test(
         'logDeviceVitals throws when remote fails and cache save fails',

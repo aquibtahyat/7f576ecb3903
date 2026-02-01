@@ -11,7 +11,7 @@ class HistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => injector.get<GetHistoryCubit>(),
-      child: HistoryBody(),
+      child: const HistoryBody(),
     );
   }
 }
