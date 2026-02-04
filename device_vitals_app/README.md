@@ -23,16 +23,16 @@ A Flutter mobile application that monitors device vitals (thermal state, battery
 ## 📱 App Screenshots
 
 <p align="center">
-  <img src="screenshots/splash.jpg" width="220" alt="Splash" />
-  <img src="screenshots/dashboard.jpg" width="220" alt="Dashboard" />
-  <img src="screenshots/history.jpg" width="220" alt="History" />
-  <img src="screenshots/thermal_analytics_1.jpg" width="220" alt="Thermal Analytics 1" />
+  <img src="device_vitals_app/screenshots/splash.jpg" width="220" alt="Splash" />
+  <img src="device_vitals_app/screenshots/dashboard.jpg" width="220" alt="Dashboard" />
+  <img src="device_vitals_app/screenshots/history.jpg" width="220" alt="History" />
+  <img src="device_vitals_app/screenshots/thermal_analytics_1.jpg" width="220" alt="Thermal Analytics 1" />
 </p>
 <p align="center">
-  <img src="screenshots/thermal_analytics_2.jpg" width="220" alt="Thermal Analytics 2" />
-  <img src="screenshots/battery_analytics.jpg" width="220" alt="Battery Analytics" />
-  <img src="screenshots/memory_usage_analytics_1.jpg" width="220" alt="Memory Usage Analytics 1" />
-  <img src="screenshots/memory_usage_analytics_2.jpg" width="220" alt="Memory Usage Analytics 2" />
+  <img src="device_vitals_app/screenshots/thermal_analytics_2.jpg" width="220" alt="Thermal Analytics 2" />
+  <img src="device_vitals_app/screenshots/battery_analytics.jpg" width="220" alt="Battery Analytics" />
+  <img src="device_vitals_app/screenshots/memory_usage_analytics_1.jpg" width="220" alt="Memory Usage Analytics 1" />
+  <img src="device_vitals_app/screenshots/memory_usage_analytics_2.jpg" width="220" alt="Memory Usage Analytics 2" />
 </p>
 
 ## 🎯 Overview
