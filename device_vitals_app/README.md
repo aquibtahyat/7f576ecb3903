@@ -565,7 +565,7 @@ Uses `retrofit` + `dio`:
 
 ## 🤝 Contributing
 
-This is a take-home assignment project. For questions or issues, refer to:
+For questions or issues, refer to:
 - [Main README](../README.md)
 - [DECISIONS.md](../DECISIONS.md)
 - [ai_log.md](../ai_log.md)

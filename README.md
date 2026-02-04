@@ -107,8 +107,8 @@ flutter test
 
 ## 📝 Additional Information
 
-This project was developed as a take-home assignment demonstrating:
-- Full-stack mobile development (Flutter + Native)
+This project demonstrates:
+- Flutter app with native platform integration via MethodChannel
 - Backend API design and implementation
 - Clean architecture and separation of concerns
 - Error handling and data validation
