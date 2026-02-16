@@ -1,7 +1,7 @@
-import 'package:device_vitals_app/src/features/device_vitals/domain/entities/thermal_state_entity.dart';
+class ThermalStateModel {
+  final int? value;
 
-class ThermalStateModel extends ThermalStateEntity {
-  const ThermalStateModel({super.value});
+  const ThermalStateModel({this.value});
 
   factory ThermalStateModel.fromJson(Map<String, dynamic> json) {
     return ThermalStateModel(value: json['value']);

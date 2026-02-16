@@ -1,7 +1,4 @@
 import 'package:device_vitals_app/src/core/utils/extensions/snackbar_extension.dart';
-import 'package:device_vitals_app/src/features/device_vitals/domain/entities/device_vitals_request_entity.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_preference/auto_log_preference_cubit.dart';
-import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_preference/auto_log_preference_state.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/auto_log_timer/auto_log_timer_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_cubit.dart';
 import 'package:device_vitals_app/src/features/device_vitals/presentation/manager/get_battery_level/get_battery_level_state.dart';
@@ -92,14 +89,11 @@ class _DashboardBodyState extends State<DashboardBody>
         BlocListener<LogDeviceVitalsCubit, LogDeviceVitalsState>(
           listenWhen: (previous, current) => previous != current,
           listener: (context, state) {
-            final prefState = context.read<AutoLogPreferenceCubit>().state;
             final timerCubit = context.read<AutoLogTimerCubit>();
 
             if (state is LogDeviceVitalsFailure) {
               context.showSnackBar(state.message);
-
-              if (prefState is AutoLogPreferenceSuccess &&
-                  prefState.isEnabled) {
+              if (state.isAutoLog) {
                 timerCubit.startTimer();
               }
             } else if (state is LogDeviceVitalsSuccess) {
@@ -198,19 +192,10 @@ class _DashboardBodyState extends State<DashboardBody>
         ? mState.memoryUsage.memoryUsage
         : null;
 
-    final canLog = thermal != null && battery != null && memory != null;
-
-    if (!canLog) {
-      context.showSnackBar('Vitals aren’t available to log at the moment');
-      return;
-    }
-
     context.read<LogDeviceVitalsCubit>().logDeviceVitals(
-      DeviceVitalsRequestEntity(
-        thermalValue: thermal,
-        batteryLevel: battery,
-        memoryUsage: memory,
-      ),
+      thermalValue: thermal,
+      batteryLevel: battery,
+      memoryUsage: memory,
       isAutoLog: isAutoLog,
     );
   }

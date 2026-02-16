@@ -28,8 +28,9 @@ final class LogDeviceVitalsSuccess extends LogDeviceVitalsState {
 
 final class LogDeviceVitalsFailure extends LogDeviceVitalsState {
   final String message;
-  const LogDeviceVitalsFailure(this.message);
+  final bool isAutoLog;
+  const LogDeviceVitalsFailure(this.message, {this.isAutoLog = false});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isAutoLog];
 }

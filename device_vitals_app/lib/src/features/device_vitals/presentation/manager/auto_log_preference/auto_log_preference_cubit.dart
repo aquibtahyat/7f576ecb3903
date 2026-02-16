@@ -25,9 +25,10 @@ class AutoLogPreferenceCubit extends Cubit<AutoLogPreferenceState> {
         if (!isClosed) emit(AutoLogPreferenceSuccess(isEnabled: enabled));
       },
       failure: (_) {
-        if (!isClosed) emit(
-          const AutoLogPreferenceFailure('Failed to get auto log preference'),
-        );
+        if (!isClosed)
+          emit(
+            const AutoLogPreferenceFailure('Failed to get auto log preference'),
+          );
       },
     );
   }
@@ -40,9 +41,10 @@ class AutoLogPreferenceCubit extends Cubit<AutoLogPreferenceState> {
         if (!isClosed) emit(AutoLogPreferenceSuccess(isEnabled: enabled));
       },
       failure: (_) {
-        if (!isClosed) emit(
-          const AutoLogPreferenceFailure('Failed to set auto log preference'),
-        );
+        if (!isClosed)
+          emit(
+            const AutoLogPreferenceFailure('Failed to set auto log preference'),
+          );
       },
     );
   }

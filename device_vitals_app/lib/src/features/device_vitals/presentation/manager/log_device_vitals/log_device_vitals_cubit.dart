@@ -10,17 +10,36 @@ class LogDeviceVitalsCubit extends Cubit<LogDeviceVitalsState> {
 
   LogDeviceVitalsCubit(this.useCase) : super(const LogDeviceVitalsInitial());
 
-  Future<void> logDeviceVitals(
-    DeviceVitalsRequestEntity request, {
+  Future<void> logDeviceVitals({
+    int? thermalValue,
+    int? batteryLevel,
+    int? memoryUsage,
     bool isAutoLog = false,
   }) async {
     emit(const LogDeviceVitalsLoading());
+
+    if (thermalValue == null || batteryLevel == null || memoryUsage == null) {
+      emit(
+        LogDeviceVitalsFailure(
+          'Vitals aren’t available to log at the moment',
+          isAutoLog: isAutoLog,
+        ),
+      );
+      return;
+    }
+
+    final request = DeviceVitalsRequestEntity(
+      thermalValue: thermalValue,
+      batteryLevel: batteryLevel,
+      memoryUsage: memoryUsage,
+    );
 
     final result = await useCase(request);
 
     result.when(
       success: (_) => emit(LogDeviceVitalsSuccess(isAutoLog: isAutoLog)),
-      failure: (message) => emit(LogDeviceVitalsFailure(message)),
+      failure: (message) =>
+          emit(LogDeviceVitalsFailure(message, isAutoLog: isAutoLog)),
     );
   }
 }
